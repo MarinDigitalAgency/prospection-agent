@@ -1,9 +1,9 @@
-bind = "127.0.0.1:8081"
+bind = "0.0.0.0:8081"
 workers = 2
 worker_class = "gthread"
 threads = 4
-timeout = 360          # audits peuvent prendre 3 min
+timeout = 360
 keepalive = 5
-accesslog = "/var/log/prospection-agent/access.log"
-errorlog  = "/var/log/prospection-agent/error.log"
+accesslog = "-"
+errorlog  = "-"
 loglevel  = "info"
