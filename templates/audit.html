@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 18mm 25mm 18mm;
+    @bottom-center {
+      content: "Page " counter(page) " / " counter(pages);
+      font-size: 8pt;
+      color: #94a3b8;
+      font-family: 'Segoe UI', sans-serif;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    font-size: 10pt;
+    color: #1e293b;
+    line-height: 1.5;
+  }
+
+  /* ═══ PAGE 1 : SYNTHÈSE ═══ */
+  .cover {
+    page-break-after: always;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cover-header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    color: white;
+    padding: 30px 35px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+  }
+
+  .cover-header h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+
+  .cover-header .subtitle {
+    font-size: 11pt;
+    color: #93c5fd;
+    font-weight: 400;
+  }
+
+  .cover-header .audit-date {
+    font-size: 8pt;
+    color: #64748b;
+    margin-top: 10px;
+  }
+
+  .cover-header .domain {
+    font-size: 13pt;
+    color: #e2e8f0;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* Score global */
+  .score-hero {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    margin-bottom: 30px;
+  }
+
+  .score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-weight: 800;
+    font-size: 28pt;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .score-circle.green { background: linear-gradient(135deg, #059669, #10b981); }
+  .score-circle.yellow { background: linear-gradient(135deg, #d97706, #f59e0b); }
+  .score-circle.red { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+  .score-circle small {
+    font-size: 9pt;
+    font-weight: 400;
+    opacity: 0.9;
+  }
+
+  .score-summary h2 {
+    font-size: 14pt;
+    margin-bottom: 5px;
+    color: #0f172a;
+  }
+
+  .score-summary p {
+    font-size: 10pt;
+    color: #64748b;
+  }
+
+  /* Scores catégories */
+  .category-scores {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+  }
+
+  .cat-score {
+    flex: 1;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .cat-score .cat-value {
+    font-size: 20pt;
+    font-weight: 700;
+  }
+
+  .cat-score .cat-label {
+    font-size: 8pt;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 3px;
+  }
+
+  .cat-value.green { color: #059669; }
+  .cat-value.yellow { color: #d97706; }
+  .cat-value.red { color: #dc2626; }
+
+  /* Top 3 problèmes */
+  .top-issues {
+    margin-bottom: 25px;
+  }
+
+  .top-issues h2 {
+    font-size: 13pt;
+    margin-bottom: 12px;
+    color: #0f172a;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 5px;
+  }
+
+  .issue-card {
+    border-left: 4px solid;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 0 6px 6px 0;
+    background: #fafafa;
+  }
+
+  .issue-card.critical { border-color: #dc2626; background: #fef2f2; }
+  .issue-card.warning { border-color: #d97706; background: #fffbeb; }
+  .issue-card.info { border-color: #3b82f6; background: #eff6ff; }
+
+  .issue-card .issue-title {
+    font-weight: 700;
+    font-size: 10pt;
+    margin-bottom: 3px;
+  }
+
+  .issue-card .issue-message {
+    font-size: 9pt;
+    color: #475569;
+  }
+
+  .issue-card .issue-impact {
+    font-size: 8pt;
+    color: #64748b;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* ═══ PAGES DÉTAILS ═══ */
+  .detail-section {
+    margin-bottom: 25px;
+  }
+
+  .detail-section h2 {
+    font-size: 14pt;
+    color: #0f172a;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 6px;
+    margin-bottom: 15px;
+  }
+
+  .detail-section h3 {
+    font-size: 11pt;
+    color: #334155;
+    margin-bottom: 8px;
+    margin-top: 15px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 9pt;
+  }
+
+  th {
+    background: #f1f5f9;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #475569;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  tr:nth-child(even) td { background: #fafafa; }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 8pt;
+    font-weight: 600;
+  }
+
+  .badge.good { background: #d1fae5; color: #065f46; }
+  .badge.warning { background: #fef3c7; color: #92400e; }
+  .badge.critical { background: #fee2e2; color: #991b1b; }
+
+  /* Checklist technique */
+  .checklist {
+    list-style: none;
+    padding: 0;
+  }
+
+  .checklist li {
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 9.5pt;
+  }
+
+  .check-pass::before { content: "✅ "; }
+  .check-fail::before { content: "❌ "; }
+
+  /* Recommandations */
+  .rec-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 10px;
+  }
+
+  .rec-card .rec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+
+  .rec-card .rec-title {
+    font-weight: 700;
+    font-size: 10pt;
+    color: #0f172a;
+  }
+
+  .rec-card .rec-priority {
+    font-size: 8pt;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .rec-priority.critique { background: #fee2e2; color: #991b1b; }
+  .rec-priority.haute { background: #fed7aa; color: #9a3412; }
+  .rec-priority.moyenne { background: #fef3c7; color: #92400e; }
+
+  .rec-card .rec-desc {
+    font-size: 9pt;
+    color: #475569;
+    line-height: 1.5;
+  }
+
+  .rec-card .rec-meta {
+    font-size: 8pt;
+    color: #94a3b8;
+    margin-top: 5px;
+  }
+
+  /* CTA final */
+  .cta-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .cta-section h2 {
+    font-size: 16pt;
+    margin-bottom: 8px;
+    border: none;
+    color: white;
+  }
+
+  .cta-section p {
+    color: #93c5fd;
+    font-size: 10pt;
+    margin-bottom: 15px;
+  }
+
+  .cta-button {
+    display: inline-block;
+    background: #3b82f6;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 11pt;
+  }
+
+  .cta-contact {
+    margin-top: 15px;
+    font-size: 9pt;
+    color: #94a3b8;
+  }
+
+  .page-break { page-break-before: always; }
+
+  /* ── Section Instagram ── */
+  .social-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    color: white;
+  }
+
+  .ig-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.6);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .ig-avatar-placeholder {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.4);
+    background: rgba(255,255,255,.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26pt;
+    flex-shrink: 0;
+  }
+
+  .ig-handle {
+    font-size: 16pt;
+    font-weight: 700;
+  }
+
+  .ig-bio {
+    font-size: 9pt;
+    opacity: .85;
+    margin-top: 4px;
+  }
+
+  .ig-stats {
+    display: flex;
+    gap: 12px;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .ig-stat {
+    text-align: center;
+    background: rgba(255,255,255,.15);
+    border-radius: 8px;
+    padding: 10px 16px;
+    min-width: 80px;
+  }
+
+  .ig-stat-value {
+    font-size: 16pt;
+    font-weight: 800;
+    display: block;
+  }
+
+  .ig-stat-label {
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    opacity: .8;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .social-missing {
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    color: #94a3b8;
+    margin-bottom: 20px;
+  }
+
+  .social-missing .icon { font-size: 28pt; margin-bottom: 10px; }
+  .social-missing p { font-size: 10pt; }
+
+  .ig-score-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 15px;
+  }
+
+  .ig-score-circle {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14pt;
+    font-weight: 800;
+    color: white;
+    flex-shrink: 0;
+  }
+  .ig-score-circle.green  { background: linear-gradient(135deg, #059669, #10b981); }
+  .ig-score-circle.yellow { background: linear-gradient(135deg, #d97706, #f59e0b); }
+  .ig-score-circle.red    { background: linear-gradient(135deg, #dc2626, #ef4444); }
+
+  /* ── Section Facebook ── */
+  .fb-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: linear-gradient(135deg, #1877f2 0%, #0d5bb5 100%);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    color: white;
+  }
+
+  .fb-icon {
+    width: 56px; height: 56px;
+    border-radius: 12px;
+    background: rgba(255,255,255,.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28pt;
+    flex-shrink: 0;
+  }
+
+  .fb-page-name {
+    font-size: 15pt;
+    font-weight: 700;
+  }
+
+  .fb-page-url {
+    font-size: 9pt;
+    opacity: .8;
+    margin-top: 3px;
+    word-break: break-all;
+  }
+
+  .fb-signals {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .fb-signal {
+    background: rgba(255,255,255,.15);
+    border-radius: 8px;
+    padding: 8px 14px;
+    text-align: center;
+    min-width: 90px;
+  }
+
+  .fb-signal-icon  { font-size: 16pt; display: block; }
+  .fb-signal-label { font-size: 7pt; text-transform: uppercase; letter-spacing: .4px; opacity: .8; display: block; margin-top: 3px; }
+  .fb-signal-val   { font-size: 9pt; font-weight: 700; display: block; margin-top: 1px; }
+
+  .signal-yes { color: #bbf7d0; }
+  .signal-no  { color: #fca5a5; }
+  .signal-na  { color: rgba(255,255,255,.5); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PAGE 1 : SYNTHÈSE (support du Loom)       -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="cover">
+
+  <div class="cover-header">
+    <h1>Mini-Audit SEO & Performance</h1>
+    <div class="subtitle">Devenez l'agence n°1 de votre ville</div>
+    <div class="domain">{{ analysis.domain }}</div>
+    <div class="audit-date">Audit réalisé le {{ analysis.audit_date }}</div>
+  </div>
+
+  <!-- Score global -->
+  <div class="score-hero">
+    <div class="score-circle {{ 'green' if analysis.global_score >= 80 else ('yellow' if analysis.global_score >= 50 else 'red') }}">
+      {{ analysis.global_score }}
+      <small>/100</small>
+    </div>
+    <div class="score-summary">
+      <h2>
+        {% if analysis.global_score >= 80 %}
+          Bonne base, mais des opportunités manquées
+        {% elif analysis.global_score >= 50 %}
+          Plusieurs axes d'amélioration identifiés
+        {% else %}
+          Des problèmes critiques freinent votre visibilité
+        {% endif %}
+      </h2>
+      <p>{{ analysis.issue_counts.critical }} problème{{ 's' if analysis.issue_counts.critical > 1 }} critique{{ 's' if analysis.issue_counts.critical > 1 }},
+         {{ analysis.issue_counts.warning }} avertissement{{ 's' if analysis.issue_counts.warning > 1 }},
+         {{ analysis.issue_counts.info }} info{{ 's' if analysis.issue_counts.info > 1 }}</p>
+    </div>
+  </div>
+
+  <!-- Scores catégories -->
+  <div class="category-scores">
+    {% for key in ['performance', 'seo', 'accessibility', 'best_practices'] %}
+    {% set v = analysis.verdicts[key] %}
+    <div class="cat-score">
+      <div class="cat-value {{ 'green' if v.score >= 90 else ('yellow' if v.score >= 50 else 'red') }}">{{ v.score }}</div>
+      <div class="cat-label">{{ v.label }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Top 3 problèmes -->
+  <div class="top-issues">
+    <h2>🎯 Les 3 problèmes prioritaires</h2>
+    {% for issue in analysis.top_3_issues %}
+    <div class="issue-card {{ issue.severity }}">
+      <div class="issue-title">{{ issue.title }}</div>
+      <div class="issue-message">{{ issue.message }}</div>
+      <div class="issue-impact">💡 {{ issue.impact }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PAGE 2 : CORE WEB VITALS                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<div class="detail-section">
+  <h2>⚡ Core Web Vitals & Performance</h2>
+  <p style="font-size: 9pt; color: #64748b; margin-bottom: 15px;">
+    Les Core Web Vitals sont les indicateurs de Google pour mesurer l'expérience utilisateur.
+    Ils influencent directement votre positionnement.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Métrique</th>
+        <th>Valeur</th>
+        <th>Seuil recommandé</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set cwv_rows = [
+        ('LCP (Largest Contentful Paint)', analysis.verdicts.lcp.value, 's', '≤ 2.5s', analysis.verdicts.lcp.rating),
+        ('CLS (Cumulative Layout Shift)', analysis.verdicts.cls.value, '', '≤ 0.1', analysis.verdicts.cls.rating),
+        ('TBT (Total Blocking Time)', analysis.verdicts.tbt.value, 'ms', '≤ 200ms', analysis.verdicts.tbt.rating),
+      ] %}
+      {% for label, value, unit, threshold, rating in cwv_rows %}
+      <tr>
+        <td><strong>{{ label }}</strong></td>
+        <td>{{ value if value is not none else 'N/A' }}{{ unit if value is not none }}</td>
+        <td>{{ threshold }}</td>
+        <td>{{ rating }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if analysis.raw.pagespeed.diagnostics %}
+  <h3>Diagnostics Lighthouse</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Problème</th>
+        <th>Détail</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for diag in analysis.raw.pagespeed.diagnostics[:8] %}
+      <tr>
+        <td>{{ diag.title }}</td>
+        <td>{{ diag.display_value or '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PAGE 3 : SEO ON-PAGE                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<div class="detail-section">
+  <h2>🔍 SEO On-Page</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Élément</th>
+        <th>Contenu / Valeur</th>
+        <th>Verdict</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Title</strong></td>
+        <td>{{ analysis.raw.onpage.title[:70] or '(absent)' }}
+            <br><span style="font-size:8pt;color:#94a3b8;">{{ analysis.raw.onpage.title_length }} caractères</span></td>
+        <td>
+          {% if not analysis.raw.onpage.title %}
+            <span class="badge critical">Absent</span>
+          {% elif analysis.raw.onpage.title_length > 60 %}
+            <span class="badge warning">Trop long</span>
+          {% else %}
+            <span class="badge good">OK</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Meta Description</strong></td>
+        <td>{{ analysis.raw.onpage.meta_description[:120] or '(absente)' }}
+            <br><span style="font-size:8pt;color:#94a3b8;">{{ analysis.raw.onpage.meta_description_length }} caractères</span></td>
+        <td>
+          {% if not analysis.raw.onpage.meta_description %}
+            <span class="badge critical">Absente</span>
+          {% elif analysis.raw.onpage.meta_description_length < 120 %}
+            <span class="badge warning">Trop courte</span>
+          {% elif analysis.raw.onpage.meta_description_length > 160 %}
+            <span class="badge warning">Trop longue</span>
+          {% else %}
+            <span class="badge good">OK</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>H1</strong></td>
+        <td>{{ analysis.raw.onpage.h1|join(', ') if analysis.raw.onpage.h1 else '(absent)' }}</td>
+        <td>
+          {% if analysis.raw.onpage.h1_count == 0 %}
+            <span class="badge critical">Absent</span>
+          {% elif analysis.raw.onpage.h1_count > 1 %}
+            <span class="badge warning">{{ analysis.raw.onpage.h1_count }} H1</span>
+          {% else %}
+            <span class="badge good">OK</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Images</strong></td>
+        <td>{{ analysis.raw.onpage.images_total }} images, {{ analysis.raw.onpage.images_missing_alt }} sans alt</td>
+        <td>
+          {% if analysis.raw.onpage.images_missing_alt > 0 %}
+            <span class="badge warning">Alt manquants</span>
+          {% else %}
+            <span class="badge good">OK</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Viewport (mobile)</strong></td>
+        <td>{{ 'Présent' if analysis.raw.onpage.has_viewport else 'Absent' }}</td>
+        <td>
+          {% if analysis.raw.onpage.has_viewport %}
+            <span class="badge good">OK</span>
+          {% else %}
+            <span class="badge critical">Non responsive</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Canonical</strong></td>
+        <td>{{ analysis.raw.onpage.canonical_url[:60] or '(absente)' }}</td>
+        <td>
+          {% if analysis.raw.onpage.canonical_url %}
+            <span class="badge good">OK</span>
+          {% else %}
+            <span class="badge warning">Absente</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Open Graph</strong></td>
+        <td>{{ 'Complet' if analysis.raw.onpage.og_complete else 'Incomplet' }}</td>
+        <td>
+          {% if analysis.raw.onpage.og_complete %}
+            <span class="badge good">OK</span>
+          {% else %}
+            <span class="badge warning">Incomplet</span>
+          {% endif %}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Checklist technique -->
+<div class="detail-section">
+  <h2>🔧 Checklist Technique</h2>
+  <ul class="checklist">
+    <li class="{{ 'check-pass' if analysis.raw.technical.is_https else 'check-fail' }}">
+      HTTPS {{ '— Activé' if analysis.raw.technical.is_https else '— Non activé ⚠️' }}
+    </li>
+    <li class="{{ 'check-pass' if analysis.raw.technical.has_robots else 'check-fail' }}">
+      robots.txt {{ '— Présent' if analysis.raw.technical.has_robots else '— Absent' }}
+    </li>
+    <li class="{{ 'check-pass' if analysis.raw.technical.has_sitemap else 'check-fail' }}">
+      sitemap.xml {{ '— Présent (' ~ analysis.raw.technical.sitemap_urls_count ~ ' URLs)' if analysis.raw.technical.has_sitemap else '— Absent' }}
+    </li>
+    <li class="{{ 'check-pass' if analysis.raw.technical.has_schema else 'check-fail' }}">
+      Schema.org (JSON-LD) {{ '— ' ~ analysis.raw.technical.schema_types|join(', ') if analysis.raw.technical.has_schema else '— Absent' }}
+    </li>
+    <li class="{{ 'check-pass' if (analysis.raw.technical.response_time_ms or 0) < 3000 else 'check-fail' }}">
+      Temps de réponse serveur — {{ analysis.raw.technical.response_time_ms or 'N/A' }}ms
+    </li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PAGE 4 : RECOMMANDATIONS + CTA            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<div class="detail-section">
+  <h2>📋 Recommandations priorisées</h2>
+
+  {% for rec in analysis.recommendations %}
+  <div class="rec-card">
+    <div class="rec-header">
+      <span class="rec-title">{{ rec.title }}</span>
+      <span class="rec-priority {{ rec.priority }}">{{ rec.priority|upper }}</span>
+    </div>
+    <div class="rec-desc">{{ rec.description }}</div>
+    <div class="rec-meta">{{ rec.category }} · Effort : {{ rec.effort }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PAGE 5 : PRÉSENCE SOCIALE INSTAGRAM      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<div class="detail-section">
+  <h2>📱 Présence sociale — Instagram</h2>
+
+  {% set social = analysis.raw.social %}
+  {% set metrics = social.metrics if social.metrics else {} %}
+
+  {% if social.instagram_linked and social.instagram_handle %}
+
+    <!-- En-tête profil -->
+    <div class="social-header">
+      {% if metrics.profile_image %}
+        <img class="ig-avatar" src="{{ metrics.profile_image }}" alt="@{{ social.instagram_handle }}" />
+      {% else %}
+        <div class="ig-avatar-placeholder">📷</div>
+      {% endif %}
+
+      <div>
+        <div class="ig-handle">@{{ social.instagram_handle }}</div>
+        {% if metrics.title %}
+          <div class="ig-bio">{{ metrics.title }}</div>
+        {% endif %}
+        {% if metrics.bio %}
+          <div class="ig-bio" style="margin-top:4px;font-style:italic;">"{{ metrics.bio[:120] }}"</div>
+        {% endif %}
+      </div>
+
+      {% if metrics.found %}
+      <div class="ig-stats">
+        <div class="ig-stat">
+          <span class="ig-stat-value">{{ "{:,}".format(metrics.followers) if metrics.followers is not none else "—" }}</span>
+          <span class="ig-stat-label">Abonnés</span>
+        </div>
+        <div class="ig-stat">
+          <span class="ig-stat-value">{{ metrics.posts if metrics.posts is not none else "—" }}</span>
+          <span class="ig-stat-label">Posts</span>
+        </div>
+        <div class="ig-stat">
+          <span class="ig-stat-value">{{ "{:,}".format(metrics.following) if metrics.following is not none else "—" }}</span>
+          <span class="ig-stat-label">Abonnements</span>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Score social -->
+    <div class="ig-score-row">
+      <div class="ig-score-circle {{ 'green' if analysis.social_score >= 80 else ('yellow' if analysis.social_score >= 50 else 'red') }}">
+        {{ analysis.social_score }}
+      </div>
+      <div>
+        <strong>Score présence sociale : {{ analysis.social_score }}/100</strong>
+        <div style="font-size:9pt;color:#64748b;margin-top:3px;">
+          {% if analysis.social_score >= 80 %}
+            Bonne présence sociale — compte actif et audience significative
+          {% elif analysis.social_score >= 50 %}
+            Présence sociale correcte, mais des axes d'amélioration existent
+          {% else %}
+            Présence sociale insuffisante — potentiel inexploité
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau métriques -->
+    {% if metrics.found %}
+    <table>
+      <thead>
+        <tr>
+          <th>Métrique</th>
+          <th>Valeur</th>
+          <th>Seuil recommandé</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Abonnés</strong></td>
+          <td>{{ "{:,}".format(metrics.followers) if metrics.followers is not none else "N/A" }}</td>
+          <td>≥ 500</td>
+          <td>
+            {% if metrics.followers is not none %}
+              {% if metrics.followers >= 1000 %}<span class="badge good">🟢 Excellent</span>
+              {% elif metrics.followers >= 200 %}<span class="badge warning">🟡 Correct</span>
+              {% else %}<span class="badge critical">🔴 Faible</span>{% endif %}
+            {% else %}—{% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Publications</strong></td>
+          <td>{{ metrics.posts if metrics.posts is not none else "N/A" }}</td>
+          <td>≥ 30</td>
+          <td>
+            {% if metrics.posts is not none %}
+              {% if metrics.posts >= 50 %}<span class="badge good">🟢 Actif</span>
+              {% elif metrics.posts >= 15 %}<span class="badge warning">🟡 Modéré</span>
+              {% else %}<span class="badge critical">🔴 Inactif</span>{% endif %}
+            {% else %}—{% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Ratio following/abonnés</strong></td>
+          <td>
+            {% if metrics.followers and metrics.following %}
+              {{ "%.2f"|format(metrics.following / metrics.followers) }}
+            {% else %}N/A{% endif %}
+          </td>
+          <td>< 3</td>
+          <td>
+            {% if metrics.followers and metrics.following %}
+              {% set ratio = metrics.following / metrics.followers %}
+              {% if ratio < 1.5 %}<span class="badge good">🟢 Naturel</span>
+              {% elif ratio < 3 %}<span class="badge warning">🟡 Acceptable</span>
+              {% else %}<span class="badge critical">🔴 Déséquilibré</span>{% endif %}
+            {% else %}—{% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Lien affiché sur le site</strong></td>
+          <td>{{ social.instagram_url[:60] }}</td>
+          <td>Présent</td>
+          <td><span class="badge good">✅ OK</span></td>
+        </tr>
+      </tbody>
+    </table>
+    {% endif %}
+
+    <!-- Issues sociales -->
+    {% set social_issues = social.issues %}
+    {% if social_issues %}
+    <h3>Points d'attention</h3>
+    {% for issue in social_issues %}
+    <div class="issue-card {{ issue.severity }}">
+      <div class="issue-message">{{ issue.message }}</div>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+  {% else %}
+
+    <!-- Pas de lien Instagram trouvé -->
+    <div class="social-missing">
+      <div class="icon">📵</div>
+      <p><strong>Aucun lien Instagram trouvé sur le site</strong></p>
+      <p style="margin-top:6px;font-size:9pt;">
+        Instagram est le réseau social n°1 pour l'immobilier résidentiel.<br>
+        L'absence de lien visible prive vos visiteurs d'un canal de confiance essentiel.
+      </p>
+    </div>
+
+    <table>
+      <thead>
+        <tr><th>Opportunité</th><th>Impact estimé</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lien Instagram dans le footer / header</td>
+          <td>Preuve sociale immédiate pour les visiteurs</td>
+        </tr>
+        <tr>
+          <td>Visuels de biens en Reels</td>
+          <td>+40% d'engagement vs photos statiques</td>
+        </tr>
+        <tr>
+          <td>Hashtags locaux (#immobilier[Ville])</td>
+          <td>Visibilité organique auprès de l'audience locale</td>
+        </tr>
+      </tbody>
+    </table>
+
+  {% endif %}
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PAGE 6 : FACEBOOK                        -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="page-break"></div>
+
+<div class="detail-section">
+  <h2>📘 Présence sociale — Facebook</h2>
+
+  {% set social = analysis.raw.social %}
+
+  {% if social.facebook_linked %}
+
+    <!-- En-tête page -->
+    <div class="fb-header">
+      <div class="fb-icon">f</div>
+      <div>
+        <div class="fb-page-name">
+          {{ social.facebook_name if social.facebook_name else (social.facebook_slug or 'Page Facebook') }}
+        </div>
+        <div class="fb-page-url">{{ social.facebook_url }}</div>
+      </div>
+
+      <!-- Signaux détectés depuis le site -->
+      <div class="fb-signals">
+        <div class="fb-signal">
+          <span class="fb-signal-icon {{ 'signal-yes' if social.messenger.found else 'signal-no' }}">
+            {{ '✅' if social.messenger.found else '❌' }}
+          </span>
+          <span class="fb-signal-label">Messenger</span>
+          <span class="fb-signal-val">{{ social.messenger.type if social.messenger.found else 'Absent' }}</span>
+        </div>
+        <div class="fb-signal">
+          <span class="fb-signal-icon {{ 'signal-yes' if social.pixel else 'signal-no' }}">
+            {{ '✅' if social.pixel else '❌' }}
+          </span>
+          <span class="fb-signal-label">Pixel FB</span>
+          <span class="fb-signal-val">{{ 'Actif' if social.pixel else 'Absent' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score Facebook -->
+    <div class="ig-score-row">
+      <div class="ig-score-circle {{ 'green' if analysis.raw.social.facebook_score >= 70 else ('yellow' if analysis.raw.social.facebook_score >= 40 else 'red') }}">
+        {{ analysis.raw.social.facebook_score }}
+      </div>
+      <div>
+        <strong>Score présence Facebook : {{ analysis.raw.social.facebook_score }}/100</strong>
+        <div style="font-size:9pt;color:#64748b;margin-top:3px;">
+          {% if analysis.raw.social.facebook_score >= 70 %}
+            Page liée, Messenger actif — bonne accessibilité pour les prospects
+          {% elif analysis.raw.social.facebook_score >= 40 %}
+            Page présente mais des outils de conversion manquent
+          {% else %}
+            Présence Facebook minimale — potentiel de lead gen inexploité
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Tableau des signaux -->
+    <table>
+      <thead>
+        <tr>
+          <th>Signal</th>
+          <th>Statut</th>
+          <th>Impact</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Lien Facebook sur le site</strong></td>
+          <td><span class="badge good">✅ Présent</span></td>
+          <td>Visiteurs peuvent accéder à la page et aux avis</td>
+        </tr>
+        <tr>
+          <td><strong>Bouton Messenger</strong></td>
+          <td>
+            {% if social.messenger.found %}
+              <span class="badge good">✅ {{ social.messenger.type }}</span>
+            {% else %}
+              <span class="badge critical">❌ Absent</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if social.messenger.found %}
+              Contact direct depuis le site — réduction du délai de réponse
+            {% else %}
+              Opportunité manquée : les leads partent chez la concurrence
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td><strong>Facebook Pixel</strong></td>
+          <td>
+            {% if social.pixel %}
+              <span class="badge good">✅ Actif</span>
+            {% else %}
+              <span class="badge warning">❌ Absent</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if social.pixel %}
+              Retargeting possible — visiteurs reciblables sur FB/Instagram
+            {% else %}
+              Impossible de recibler les visiteurs du site en publicité
+            {% endif %}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p style="font-size:8.5pt;color:#94a3b8;margin-top:8px;font-style:italic;">
+      ℹ️ Les métriques de la page (abonnés, dernier post) nécessitent un accès authentifié à Facebook.
+      Consultez directement : <strong>{{ social.facebook_url }}</strong>
+    </p>
+
+  {% else %}
+
+    <!-- Pas de page Facebook détectée -->
+    <div class="social-missing">
+      <div class="icon">📵</div>
+      <p><strong>Aucun lien Facebook trouvé sur le site</strong></p>
+      <p style="margin-top:6px;font-size:9pt;">
+        Facebook est le canal n°1 de génération de leads pour l'immobilier local.<br>
+        L'absence de lien visible supprime un levier de contact et de crédibilité essentiel.
+      </p>
+    </div>
+
+    <!-- Tableau des signaux quand même -->
+    <table>
+      <thead>
+        <tr><th>Signal</th><th>Statut</th><th>Impact</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Lien Facebook</strong></td>
+          <td><span class="badge critical">❌ Absent</span></td>
+          <td>Aucune preuve sociale visible pour les visiteurs</td>
+        </tr>
+        <tr>
+          <td><strong>Bouton Messenger</strong></td>
+          <td>
+            {% if social.messenger.found %}
+              <span class="badge good">✅ {{ social.messenger.type }}</span>
+            {% else %}
+              <span class="badge critical">❌ Absent</span>
+            {% endif %}
+          </td>
+          <td>Contact direct impossible depuis le site</td>
+        </tr>
+        <tr>
+          <td><strong>Facebook Pixel</strong></td>
+          <td>
+            {% if social.pixel %}
+              <span class="badge good">✅ Actif</span>
+            {% else %}
+              <span class="badge warning">❌ Absent</span>
+            {% endif %}
+          </td>
+          <td>Retargeting publicitaire non opérationnel</td>
+        </tr>
+      </tbody>
+    </table>
+
+  {% endif %}
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>{{ cta.headline }}</h2>
+  <p>{{ cta.subtitle }}</p>
+  <a href="{{ cta.button_url }}" class="cta-button">{{ cta.button_text }}</a>
+  <div class="cta-contact">
+    {{ auditor.name }} · {{ auditor.title }}<br>
+    {{ auditor.email }} · {{ auditor.phone }}
+  </div>
+</div>
+
+</body>
+</html>

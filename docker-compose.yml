@@ -1,0 +1,16 @@
+services:
+  prospection-agent:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY}
+      - PAGESPEED_API_KEY=${PAGESPEED_API_KEY}
+    volumes:
+      - prospection_pdfs:/app/output/pdfs
+      - prospection_data:/app/data
+
+volumes:
+  prospection_pdfs:
+  prospection_data:

@@ -1,0 +1,18 @@
+[Unit]
+Description=Prospection Agent SEO Immobilier
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/prospection-agent
+Environment=PATH=/opt/prospection-agent/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+EnvironmentFile=/opt/prospection-agent/.env
+ExecStart=/opt/prospection-agent/.venv/bin/gunicorn -c gunicorn.conf.py src.app:app
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

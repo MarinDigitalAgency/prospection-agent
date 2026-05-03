@@ -1,0 +1,64 @@
+# Configuration de l'agent de prospection
+# Modifie ces valeurs selon ta niche et tes critères
+
+# --- Sourcing ---
+sourcing:
+  default_query: "agence immobilière"
+  default_limit: 10
+  # Rayon de recherche en mètres autour du centre-ville
+  radius: 5000
+  # Filtrer les résultats avec moins de X avis Google
+  min_reviews: 3
+
+# --- Audit SEO ---
+audit:
+  # Timeout pour les requêtes HTTP (secondes)
+  timeout: 15
+  # Nombre max de pages internes à crawler (en plus de la homepage)
+  max_pages: 5
+  # User-Agent pour le crawl
+  user_agent: "Mozilla/5.0 (compatible; SEOAuditBot/1.0)"
+
+  # Seuils Core Web Vitals
+  thresholds:
+    performance:
+      good: 90
+      needs_work: 50
+    lcp_seconds:
+      good: 2.5
+      needs_work: 4.0
+    inp_ms:
+      good: 200
+      needs_work: 500
+    cls:
+      good: 0.1
+      needs_work: 0.25
+    seo_score:
+      good: 90
+      needs_work: 50
+
+  # Seuils SEO on-page
+  onpage:
+    title_max_length: 60
+    meta_desc_min_length: 120
+    meta_desc_max_length: 160
+    h1_required: true
+    alt_images_required: true
+
+# --- PDF ---
+pdf:
+  # Nom du fichier de sortie (le nom de l'agence sera préfixé)
+  output_dir: "output/pdfs"
+  # Infos de l'auditeur (toi)
+  auditor:
+    name: "Ton Nom"
+    title: "Expert SEO Local — Immobilier"
+    email: "contact@tondomaine.com"
+    website: "https://tondomaine.com"
+    phone: "+33 6 XX XX XX XX"
+  # CTA en fin de PDF
+  cta:
+    headline: "Prêt à devenir l'agence n°1 de votre ville ?"
+    subtitle: "Réservez un appel stratégique de 30 min — gratuit et sans engagement"
+    button_text: "Réserver mon appel"
+    button_url: "https://calendly.com/ton-lien"
