@@ -114,22 +114,49 @@ def get_pagespeed_data(url: str, api_key: str | None = None) -> dict:
                 "display_value": audit.get("displayValue", ""),
             })
 
-    # Screenshot depuis Lighthouse (final-screenshot = viewport, full-page-screenshot = page entière)
-    screenshot = None
-    final_ss = audits.get("final-screenshot", {})
-    if final_ss.get("details", {}).get("data"):
-        screenshot = final_ss["details"]["data"]
-    else:
-        full_ss = audits.get("full-page-screenshot", {})
-        if full_ss.get("details", {}).get("screenshot", {}).get("data"):
-            screenshot = full_ss["details"]["screenshot"]["data"]
-
     return {
         "scores": scores,
         "core_web_vitals": cwv,
         "diagnostics": diagnostics,
-        "screenshot": screenshot,
     }
+
+
+def get_desktop_screenshot(url: str, api_key: str | None = None) -> str | None:
+    """
+    Récupère un screenshot desktop via PageSpeed Insights.
+    Appel séparé en strategy=desktop pour un viewport large sans cookie banner mobile.
+    """
+    api_key = api_key or os.getenv("PAGESPEED_API_KEY", "")
+    params = {
+        "url": url,
+        "strategy": "desktop",
+        "category": "performance",
+    }
+    if api_key:
+        params["key"] = api_key
+
+    logger.info(f"Screenshot desktop → {url}")
+    try:
+        resp = requests.get(
+            "https://www.googleapis.com/pagespeedonline/v5/runPagespeed",
+            params=params,
+            timeout=60,
+        )
+        resp.raise_for_status()
+        audits = resp.json().get("lighthouseResult", {}).get("audits", {})
+
+        final_ss = audits.get("final-screenshot", {})
+        if final_ss.get("details", {}).get("data"):
+            return final_ss["details"]["data"]
+
+        full_ss = audits.get("full-page-screenshot", {})
+        if full_ss.get("details", {}).get("screenshot", {}).get("data"):
+            return full_ss["details"]["screenshot"]["data"]
+
+    except Exception as e:
+        logger.warning(f"Screenshot desktop échoué : {e}")
+
+    return None
 
 
 # ─────────────────────────────────────────────
@@ -452,6 +479,12 @@ def run_full_audit(url: str) -> dict:
 
     pagespeed = get_pagespeed_data(url)
     time.sleep(1)  # Respecter les rate limits
+
+    # Screenshot desktop séparé (viewport large, meilleur rendu PDF)
+    screenshot = get_desktop_screenshot(url)
+    pagespeed["screenshot"] = screenshot
+    time.sleep(1)
+
     onpage = audit_onpage(url, config)
     technical = audit_technical(url, config)
     social = audit_social(url)
