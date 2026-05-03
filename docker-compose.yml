@@ -7,6 +7,7 @@ services:
     environment:
       - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY}
       - PAGESPEED_API_KEY=${PAGESPEED_API_KEY}
+      - SECRET_KEY=${SECRET_KEY}
     volumes:
       - prospection_pdfs:/app/output/pdfs
       - prospection_data:/app/data

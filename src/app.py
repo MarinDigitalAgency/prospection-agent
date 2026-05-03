@@ -1,15 +1,17 @@
 """Interface web Flask pour l'agent de prospection SEO."""
 
 import json
+import os
 import queue
 import sys
 import threading
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, Response, jsonify, render_template, request, send_file
+from flask import Flask, Response, jsonify, render_template, request, send_file, session
+
 from loguru import logger
 
 load_dotenv()
@@ -20,6 +22,8 @@ from source_prospects import search_places, save_to_csv
 from audit_site import run_full_audit
 from analyze import analyze_audit
 from generate_pdf import generate_pdf
+from db import init_db
+from auth import auth_bp, login_required
 
 BASE_DIR = Path(__file__).parent.parent
 OUTPUT_DIR = BASE_DIR / "output"
@@ -33,6 +37,15 @@ app = Flask(
     static_folder=str(BASE_DIR / "templates"),
     static_url_path="/static",
 )
+
+app.secret_key = os.getenv("SECRET_KEY", "spt-dev-secret-change-in-production")
+app.permanent_session_lifetime = timedelta(days=30)
+
+app.register_blueprint(auth_bp)
+
+# Initialiser la base de données au démarrage
+with app.app_context():
+    init_db()
 
 # Active jobs: job_id -> {status, queue, result, error, ...}
 jobs: dict[str, dict] = {}
@@ -145,15 +158,17 @@ def _run_audit_job(job_id: str, query: str | None, url: str | None, limit: int) 
 
     finally:
         logger.remove(sink_id)
-        log_queue.put(None)  # Signal de fin de stream
+        log_queue.put(None)
 
 
 @app.route("/")
+@login_required
 def index():
-    return render_template("index.html")
+    return render_template("index.html", user_email=session.get("user_email"))
 
 
 @app.route("/api/audit/start", methods=["POST"])
+@login_required
 def start_audit():
     data = request.get_json()
     query = (data.get("query") or "").strip() or None
@@ -185,6 +200,7 @@ def start_audit():
 
 
 @app.route("/api/stream/<job_id>")
+@login_required
 def stream_logs(job_id: str):
     if job_id not in jobs:
         return jsonify({"error": "Job introuvable"}), 404
@@ -220,8 +236,8 @@ def stream_logs(job_id: str):
 
 
 @app.route("/reports")
+@login_required
 def reports_page():
-    """Page listant tous les rapports archivés."""
     reports = []
     if SUMMARY_PATH.exists():
         with open(SUMMARY_PATH, encoding="utf-8") as f:
@@ -229,11 +245,14 @@ def reports_page():
         for r in reports:
             if r.get("pdf"):
                 r["pdf_filename"] = Path(r["pdf"]).name
-            r["html_available"] = bool(r.get("html_slug") and (HTML_DIR / f"{r['html_slug']}.html").exists())
-    return render_template("reports.html", reports=reports)
+            r["html_available"] = bool(
+                r.get("html_slug") and (HTML_DIR / f"{r['html_slug']}.html").exists()
+            )
+    return render_template("reports.html", reports=reports, user_email=session.get("user_email"))
 
 
 @app.route("/api/audits")
+@login_required
 def list_audits():
     if not SUMMARY_PATH.exists():
         return jsonify([])
@@ -246,12 +265,15 @@ def list_audits():
             item["pdf_filename"] = Path(item["pdf"]).name
         else:
             item["pdf_filename"] = None
-        item["html_available"] = bool(item.get("html_slug") and (HTML_DIR / f"{item['html_slug']}.html").exists())
+        item["html_available"] = bool(
+            item.get("html_slug") and (HTML_DIR / f"{item['html_slug']}.html").exists()
+        )
 
     return jsonify(data)
 
 
 @app.route("/pdfs/<filename>")
+@login_required
 def serve_pdf(filename: str):
     pdf_path = PDFS_DIR / filename
     if not pdf_path.exists():
@@ -260,14 +282,12 @@ def serve_pdf(filename: str):
 
 
 @app.route("/reports/<slug>")
+@login_required
 def serve_report_html(slug: str):
-    """Affiche le rapport HTML dans le navigateur."""
     html_path = HTML_DIR / f"{slug}.html"
     if not html_path.exists():
         return "Rapport introuvable", 404
     return send_file(html_path, mimetype="text/html")
-
-
 
 
 if __name__ == "__main__":
