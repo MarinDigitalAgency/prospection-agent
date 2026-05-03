@@ -19,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 COPY . .
 
-RUN mkdir -p output/pdfs data/audits
+RUN mkdir -p output/pdfs output/html data/audits
 
 EXPOSE 8081
 

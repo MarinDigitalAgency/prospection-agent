@@ -38,7 +38,7 @@ app = Flask(
     static_url_path="/static",
 )
 
-app.secret_key = os.getenv("SECRET_KEY", "spt-dev-secret-change-in-production")
+app.secret_key = os.getenv("SECRET_KEY") or "spt-dev-secret-change-in-production"
 app.permanent_session_lifetime = timedelta(days=30)
 
 app.register_blueprint(auth_bp)
