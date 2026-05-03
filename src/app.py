@@ -22,7 +22,7 @@ from source_prospects import search_places, save_to_csv
 from audit_site import run_full_audit
 from analyze import analyze_audit
 from generate_pdf import generate_pdf
-from db import init_db
+from db import init_db, save_audit, get_user_audits
 from auth import auth_bp, login_required
 
 BASE_DIR = Path(__file__).parent.parent
@@ -51,7 +51,7 @@ with app.app_context():
 jobs: dict[str, dict] = {}
 
 
-def _run_audit_job(job_id: str, query: str | None, url: str | None, limit: int) -> None:
+def _run_audit_job(job_id: str, query: str | None, url: str | None, limit: int, user_email: str = "") -> None:
     """Exécute un audit dans un thread et stream les logs via queue."""
     job = jobs[job_id]
     log_queue = job["queue"]
@@ -76,14 +76,17 @@ def _run_audit_job(job_id: str, query: str | None, url: str | None, limit: int) 
             analysis = analyze_audit(audit_data)
             pdf_path = generate_pdf(analysis)
             slug = Path(pdf_path).stem
-            results.append({
+            result = {
                 "name": url,
                 "website": url,
                 "score": analysis["global_score"],
                 "pdf": str(pdf_path),
                 "html_slug": slug,
                 "issues": analysis["issue_counts"],
-            })
+            }
+            results.append(result)
+            if user_email:
+                save_audit(user_email, result)
             logger.success(f"Score : {analysis['global_score']}/100 — PDF généré")
 
         elif query:
@@ -121,25 +124,25 @@ def _run_audit_job(job_id: str, query: str | None, url: str | None, limit: int) 
                     }
                     pdf_path = generate_pdf(analysis)
                     slug = Path(pdf_path).stem
-                    results.append({
+                    result = {
                         "name": name,
                         "website": website,
                         "score": analysis["global_score"],
                         "pdf": str(pdf_path),
                         "html_slug": slug,
                         "issues": analysis["issue_counts"],
-                    })
+                    }
+                    results.append(result)
+                    if user_email:
+                        save_audit(user_email, result)
                     logger.success(f"[{i+1}] ✅ {name} — Score: {analysis['global_score']}/100")
 
                 except Exception as e:
                     logger.error(f"[{i+1}] ❌ {name} — {e}")
-                    results.append({
-                        "name": name,
-                        "website": website,
-                        "score": None,
-                        "pdf": None,
-                        "error": str(e),
-                    })
+                    err_result = {"name": name, "website": website, "score": None, "pdf": None, "error": str(e)}
+                    results.append(err_result)
+                    if user_email:
+                        save_audit(user_email, err_result)
 
         # Sauvegarder le résumé
         SUMMARY_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -178,6 +181,7 @@ def start_audit():
     if not query and not url:
         return jsonify({"error": "Paramètre 'query' ou 'url' requis"}), 400
 
+    user_email = session.get("user_email", "")
     job_id = str(uuid.uuid4())
     jobs[job_id] = {
         "status": "pending",
@@ -191,7 +195,7 @@ def start_audit():
 
     thread = threading.Thread(
         target=_run_audit_job,
-        args=(job_id, query, url, limit),
+        args=(job_id, query, url, limit, user_email),
         daemon=True,
     )
     thread.start()
@@ -238,37 +242,24 @@ def stream_logs(job_id: str):
 @app.route("/reports")
 @login_required
 def reports_page():
-    reports = []
-    if SUMMARY_PATH.exists():
-        with open(SUMMARY_PATH, encoding="utf-8") as f:
-            reports = json.load(f)
-        for r in reports:
-            if r.get("pdf"):
-                r["pdf_filename"] = Path(r["pdf"]).name
-            r["html_available"] = bool(
-                r.get("html_slug") and (HTML_DIR / f"{r['html_slug']}.html").exists()
-            )
-    return render_template("reports.html", reports=reports, user_email=session.get("user_email"))
+    user_email = session.get("user_email", "")
+    reports = get_user_audits(user_email)
+    for r in reports:
+        r["html_available"] = bool(
+            r.get("html_slug") and (HTML_DIR / f"{r['html_slug']}.html").exists()
+        )
+    return render_template("reports.html", reports=reports, user_email=user_email)
 
 
 @app.route("/api/audits")
 @login_required
 def list_audits():
-    if not SUMMARY_PATH.exists():
-        return jsonify([])
-
-    with open(SUMMARY_PATH, encoding="utf-8") as f:
-        data = json.load(f)
-
+    user_email = session.get("user_email", "")
+    data = get_user_audits(user_email)
     for item in data:
-        if item.get("pdf"):
-            item["pdf_filename"] = Path(item["pdf"]).name
-        else:
-            item["pdf_filename"] = None
         item["html_available"] = bool(
             item.get("html_slug") and (HTML_DIR / f"{item['html_slug']}.html").exists()
         )
-
     return jsonify(data)
 
 

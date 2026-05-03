@@ -1,5 +1,6 @@
-"""Gestion de la base SQLite — utilisateurs."""
+"""Gestion de la base SQLite — utilisateurs et audits."""
 
+import json
 import sqlite3
 from pathlib import Path
 
@@ -25,7 +26,61 @@ def init_db() -> None:
                 created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS audits (
+                id         INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_email TEXT NOT NULL,
+                name       TEXT,
+                website    TEXT,
+                score      INTEGER,
+                pdf_path   TEXT,
+                html_slug  TEXT,
+                issues     TEXT,
+                error      TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
         conn.commit()
+
+
+# ── Audits ────────────────────────────────────────
+
+def save_audit(user_email: str, result: dict) -> None:
+    with get_conn() as conn:
+        conn.execute(
+            """INSERT INTO audits
+               (user_email, name, website, score, pdf_path, html_slug, issues, error)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+            (
+                user_email.lower(),
+                result.get("name"),
+                result.get("website"),
+                result.get("score"),
+                result.get("pdf"),
+                result.get("html_slug"),
+                json.dumps(result.get("issues") or {}),
+                result.get("error"),
+            ),
+        )
+        conn.commit()
+
+
+def get_user_audits(user_email: str) -> list[dict]:
+    with get_conn() as conn:
+        rows = conn.execute(
+            "SELECT * FROM audits WHERE user_email = ? ORDER BY created_at DESC",
+            (user_email.lower(),),
+        ).fetchall()
+    results = []
+    for row in rows:
+        r = dict(row)
+        r["issues"] = json.loads(r["issues"] or "{}")
+        if r.get("pdf_path"):
+            r["pdf_filename"] = Path(r["pdf_path"]).name
+        else:
+            r["pdf_filename"] = None
+        results.append(r)
+    return results
 
 
 def get_user_by_email(email: str) -> dict | None:
