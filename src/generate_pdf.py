@@ -25,14 +25,14 @@ def load_config() -> dict:
         return yaml.safe_load(f)
 
 
-def _render_html(analysis: dict) -> str:
+def _render_html(analysis: dict, template_name: str = "audit.html") -> str:
     """Rend le template Jinja2 avec les données d'analyse."""
     config = load_config()
     pdf_config = config.get("pdf", {})
     auditor = pdf_config.get("auditor", {})
     cta = pdf_config.get("cta", {})
     env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)))
-    template = env.get_template("audit.html")
+    template = env.get_template(template_name)
     return template.render(analysis=analysis, auditor=auditor, cta=cta)
 
 
@@ -52,7 +52,7 @@ def generate_pdf(analysis: dict, output_path: str | None = None) -> str:
 
     config = load_config()
     pdf_config = config.get("pdf", {})
-    html_content = _render_html(analysis)
+    pdf_html = _render_html(analysis, "audit.html")
 
     # Chemin de sortie
     if not output_path:
@@ -61,20 +61,19 @@ def generate_pdf(analysis: dict, output_path: str | None = None) -> str:
         domain_slug = re.sub(r"[^a-zA-Z0-9]", "_", analysis.get("domain", "site"))
         output_path = str(output_dir / f"audit_{domain_slug}.pdf")
 
-    # Sauvegarder le HTML rendu
+    # Sauvegarder le HTML web (report_view.html) séparé du template PDF
     html_dir = Path(__file__).parent.parent / "output" / "html"
     html_dir.mkdir(parents=True, exist_ok=True)
     html_slug = Path(output_path).stem  # audit_domain
     html_path = html_dir / f"{html_slug}.html"
 
-    # Réécrire les chemins d'assets pour le HTML web (logo)
-    web_html = html_content.replace('src="logo.svg"', 'src="/static/logo.svg"')
+    web_html = _render_html(analysis, "report_view.html")
     html_path.write_text(web_html, encoding="utf-8")
     logger.info(f"HTML sauvegardé → {html_path}")
 
-    # Générer le PDF
+    # Générer le PDF depuis le template WeasyPrint
     logger.info(f"Génération PDF → {output_path}")
-    html_doc = HTML(string=html_content, base_url=str(TEMPLATE_DIR))
+    html_doc = HTML(string=pdf_html, base_url=str(TEMPLATE_DIR))
     html_doc.write_pdf(output_path)
     logger.success(f"PDF créé → {output_path}")
 

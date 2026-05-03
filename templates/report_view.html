@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit — {{ analysis.domain }} — Scrapping Performance Tool</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --creme:        #f5f1e8;
+      --creme-dark:   #ece6d8;
+      --terra:        #d4715f;
+      --terra-light:  #e8937f;
+      --terra-dark:   #b85b4a;
+      --sage:         #8b9d83;
+      --sage-light:   #a8b8a0;
+      --sage-dark:    #6d7f65;
+      --ink:          #2c1810;
+      --ink-2:        #7a6a5a;
+      --ink-3:        #a8968a;
+      --white:        #ffffff;
+      --border:       rgba(44,24,16,.1);
+      --border-med:   rgba(44,24,16,.16);
+      --shadow-sm:    0 2px 8px rgba(44,24,16,.07);
+      --shadow-md:    0 6px 24px rgba(44,24,16,.12);
+      --shadow-lg:    0 16px 56px rgba(44,24,16,.18);
+      --radius:       20px;
+      --radius-sm:    14px;
+      --radius-xs:    8px;
+      --good:         #4a7c59;
+      --good-bg:      #edf5f0;
+      --warn:         #a0692a;
+      --warn-bg:      #fdf3e3;
+      --crit:         #b84040;
+      --crit-bg:      #fdeaea;
+    }
+
+    body {
+      background: var(--creme);
+      color: var(--ink);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 9998; opacity: .04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)'/%3E%3C/svg%3E");
+    }
+
+    /* Blobs */
+    .bg-blob { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 700px; height: 700px; background: rgba(212,113,95,.08); top: -300px; right: -200px; }
+    .blob-2 { width: 600px; height: 600px; background: rgba(139,157,131,.07); bottom: -200px; left: -200px; }
+
+    /* ── Header ── */
+    header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(245,241,232,.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px; height: 64px;
+      display: flex; align-items: center; gap: 16px;
+    }
+
+    .header-logo { flex-shrink: 0; }
+    .header-logo img { height: 32px; width: auto; display: block; }
+
+    .header-nav {
+      display: flex; align-items: center; gap: 2px;
+      margin-left: auto;
+    }
+
+    .nav-item {
+      display: inline-flex; align-items: center;
+      padding: 7px 14px; border-radius: 30px;
+      text-decoration: none; font-size: 13px; font-weight: 500;
+      color: var(--ink-2); transition: all .2s; white-space: nowrap;
+      border: 1.5px solid transparent;
+    }
+
+    .nav-item:hover {
+      color: var(--ink); background: var(--creme-dark);
+    }
+
+    .nav-item.active {
+      color: var(--terra); font-weight: 600;
+      background: rgba(212,113,95,.08);
+      border-color: rgba(212,113,95,.18);
+    }
+
+    .nav-divider {
+      width: 1px; height: 20px;
+      background: var(--border-med);
+      margin: 0 6px; flex-shrink: 0;
+    }
+
+    .nav-logout {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 30px;
+      text-decoration: none; font-size: 12px; font-weight: 500;
+      color: var(--ink-2); transition: all .2s;
+      border: 1.5px solid var(--border-med);
+    }
+
+    .nav-logout:hover {
+      background: var(--terra); border-color: var(--terra); color: white;
+    }
+
+    .nav-user {
+      font-size: 11px; color: var(--ink-2);
+      max-width: 140px; overflow: hidden; text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 30px;
+      border: 1.5px solid var(--border-med);
+      background: transparent; color: var(--ink-2);
+      text-decoration: none; font-size: 13px; font-weight: 500;
+      cursor: pointer; transition: all .2s;
+    }
+    .btn:hover {
+      background: var(--terra); border-color: var(--terra);
+      color: white; transform: translateY(-1px); box-shadow: var(--shadow-sm);
+    }
+    .btn-primary {
+      background: var(--terra); border-color: var(--terra); color: white;
+    }
+    .btn-primary:hover { background: var(--terra-dark); border-color: var(--terra-dark); }
+
+    @media (max-width: 600px) {
+      .nav-user { display: none; }
+      .nav-item { padding: 7px 10px; font-size: 12px; }
+    }
+
+    /* ── Section nav ── */
+    .section-nav {
+      position: sticky; top: 60px; z-index: 100;
+      background: rgba(245,241,232,.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      display: flex; gap: 4px; overflow-x: auto;
+    }
+
+    .section-nav::-webkit-scrollbar { display: none; }
+
+    .snav-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 12px 14px;
+      font-size: 12px; font-weight: 500; color: var(--ink-2);
+      text-decoration: none; white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: all .2s;
+    }
+    .snav-link:hover, .snav-link.active {
+      color: var(--terra); border-bottom-color: var(--terra);
+    }
+
+    /* ── Layout ── */
+    .main-layout {
+      max-width: 960px; margin: 0 auto;
+      padding: 32px 20px 80px;
+      position: relative; z-index: 1;
+      display: flex; flex-direction: column; gap: 32px;
+    }
+
+    /* ── Section header ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 600; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--terra);
+      margin-bottom: 8px;
+    }
+
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: 26px; font-weight: 700; color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .section-sub {
+      font-size: 14px; color: var(--ink-2); margin-top: 6px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      position: relative;
+      transition: box-shadow .25s, transform .25s;
+    }
+    .card:hover { box-shadow: var(--shadow-md); }
+
+    .card-body { padding: 24px; }
+    .card-body-lg { padding: 32px; }
+
+    /* Grain on cards */
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      pointer-events: none; z-index: 0; opacity: .03;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)'/%3E%3C/svg%3E");
+    }
+    .card > * { position: relative; z-index: 1; }
+
+    /* ── Hero section ── */
+    #hero { scroll-margin-top: 120px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 700px) {
+      .hero-grid {
+        grid-template-columns: 1fr 340px;
+      }
+    }
+
+    .hero-main {
+      background: var(--ink);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      min-height: 340px;
+      display: flex; flex-direction: column; justify-content: flex-end;
+    }
+
+    .hero-screenshot-img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top center;
+      display: block;
+    }
+
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(15,23,42,.4) 0%,
+        rgba(15,23,42,.1) 35%,
+        rgba(15,23,42,.7) 70%,
+        rgba(15,23,42,.95) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 28px;
+    }
+
+    .hero-meta {
+      font-size: 12px; color: rgba(255,255,255,.6);
+      margin-bottom: 8px;
+    }
+
+    .hero-company {
+      font-family: 'Fraunces', serif;
+      font-size: 24px; font-weight: 700; color: white;
+      line-height: 1.2; margin-bottom: 4px;
+    }
+
+    .hero-domain-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 30px;
+      padding: 4px 12px;
+      font-size: 12px; color: rgba(255,255,255,.85);
+    }
+
+    /* score panel */
+    .score-panel {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+    }
+
+    .score-ring {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .score-ring-svg {
+      position: absolute; inset: 0;
+    }
+
+    .score-ring-num {
+      font-family: 'Fraunces', serif;
+      font-size: 48px; font-weight: 800; line-height: 1;
+    }
+    .score-ring-denom {
+      font-size: 13px; color: var(--ink-2); margin-top: 2px;
+    }
+
+    .score-ring-num.green { color: var(--good); }
+    .score-ring-num.yellow { color: var(--warn); }
+    .score-ring-num.red { color: var(--crit); }
+
+    .score-verdict {
+      font-size: 13px; color: var(--ink-2); margin-bottom: 20px; line-height: 1.4;
+    }
+
+    .score-pills {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8px; width: 100%;
+    }
+
+    .score-pill {
+      background: var(--creme);
+      border-radius: var(--radius-xs);
+      padding: 8px 10px;
+      text-align: center;
+    }
+    .pill-val {
+      display: block;
+      font-family: 'Fraunces', serif;
+      font-size: 20px; font-weight: 700; line-height: 1;
+    }
+    .pill-val.green { color: var(--good); }
+    .pill-val.yellow { color: var(--warn); }
+    .pill-val.red { color: var(--crit); }
+
+    .pill-label {
+      display: block;
+      font-size: 10px; color: var(--ink-2);
+      margin-top: 3px; text-transform: uppercase; letter-spacing: .04em;
+    }
+
+    /* ── Issues ── */
+    .issues-grid {
+      display: flex; flex-direction: column; gap: 10px;
+      margin-top: 20px;
+    }
+
+    .issue-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--creme);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      border-left: 3px solid transparent;
+    }
+    .issue-row.critical { border-left-color: var(--crit); background: var(--crit-bg); }
+    .issue-row.warning  { border-left-color: #d97706; background: var(--warn-bg); }
+    .issue-row.info     { border-left-color: #3b82f6; background: #eff6ff; }
+
+    .issue-icon-wrap {
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .issue-title {
+      font-weight: 600; font-size: 13px; color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .issue-msg {
+      font-size: 12px; color: var(--ink-2); line-height: 1.4;
+    }
+
+    /* ── Performance section ── */
+    #perf { scroll-margin-top: 120px; }
+
+    .cwv-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+
+    .cwv-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px 18px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .cwv-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    .cwv-label {
+      font-size: 10px; font-weight: 600; letter-spacing: .06em;
+      text-transform: uppercase; color: var(--ink-3);
+      margin-bottom: 10px;
+    }
+
+    .cwv-value {
+      font-family: 'Fraunces', serif;
+      font-size: 28px; font-weight: 700; line-height: 1;
+      margin-bottom: 6px;
+    }
+    .cwv-value.green { color: var(--good); }
+    .cwv-value.yellow { color: var(--warn); }
+    .cwv-value.red { color: var(--crit); }
+
+    .cwv-threshold {
+      font-size: 11px; color: var(--ink-3);
+    }
+
+    .cwv-rating {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 2px 10px; border-radius: 30px;
+      font-size: 10px; font-weight: 600;
+    }
+    .cwv-rating.green  { background: var(--good-bg); color: var(--good); }
+    .cwv-rating.yellow { background: var(--warn-bg); color: var(--warn); }
+    .cwv-rating.red    { background: var(--crit-bg); color: var(--crit); }
+
+    /* diagnostics */
+    .diag-list {
+      display: flex; flex-direction: column; gap: 10px;
+      margin-top: 16px;
+    }
+
+    .diag-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px;
+      background: var(--creme);
+      border-radius: var(--radius-xs);
+    }
+
+    .diag-icon {
+      width: 32px; height: 32px; flex-shrink: 0;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      background: rgba(44,24,16,.06);
+    }
+
+    .diag-title { font-size: 13px; font-weight: 500; color: var(--ink); }
+    .diag-val   { font-size: 12px; color: var(--ink-2); margin-top: 1px; }
+    .diag-body  { flex: 1; min-width: 0; }
+
+    /* ── SEO section ── */
+    #seo { scroll-margin-top: 120px; }
+
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .audit-table th {
+      font-size: 11px; font-weight: 600; letter-spacing: .04em;
+      text-transform: uppercase; color: var(--ink-2);
+      text-align: left; padding: 10px 16px;
+      border-bottom: 1px solid var(--border-med);
+      background: var(--creme);
+    }
+    .audit-table th:first-child { border-radius: var(--radius-xs) 0 0 0; }
+    .audit-table th:last-child  { border-radius: 0 var(--radius-xs) 0 0; }
+
+    .audit-table td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--ink); vertical-align: top;
+    }
+
+    .audit-table tr:last-child td { border-bottom: none; }
+    .audit-table tr:hover td { background: rgba(245,241,232,.5); }
+
+    .td-label { font-weight: 600; color: var(--ink); white-space: nowrap; }
+    .td-val   { color: var(--ink-2); font-size: 12px; word-break: break-all; }
+    .td-sub   { display: block; font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 10px; border-radius: 30px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .badge-good { background: var(--good-bg); color: var(--good); }
+    .badge-warn { background: var(--warn-bg); color: var(--warn); }
+    .badge-crit { background: var(--crit-bg); color: var(--crit); }
+
+    /* ── Technical section ── */
+    #tech { scroll-margin-top: 120px; }
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+
+    .check-card {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .check-icon {
+      width: 32px; height: 32px; flex-shrink: 0;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .check-icon.pass { background: var(--good-bg); }
+    .check-icon.fail { background: var(--crit-bg); }
+
+    .check-name { font-weight: 600; font-size: 13px; color: var(--ink); }
+    .check-detail { font-size: 12px; color: var(--ink-2); margin-top: 3px; }
+
+    /* ── Recommendations ── */
+    #recs { scroll-margin-top: 120px; }
+
+    .rec-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .rec-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-sm);
+      display: flex; align-items: flex-start; gap: 16px;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .rec-card:hover { box-shadow: var(--shadow-md); transform: translateX(3px); }
+
+    .rec-prio {
+      flex-shrink: 0;
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; letter-spacing: .04em;
+    }
+    .prio-high   { background: var(--crit-bg); color: var(--crit); }
+    .prio-medium { background: var(--warn-bg); color: var(--warn); }
+    .prio-low    { background: #eff6ff; color: #3b82f6; }
+
+    .rec-body { flex: 1; min-width: 0; }
+    .rec-title { font-weight: 600; font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+    .rec-desc  { font-size: 13px; color: var(--ink-2); line-height: 1.5; margin-bottom: 8px; }
+    .rec-meta  {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; color: var(--ink-3);
+    }
+    .rec-meta span {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--creme); border-radius: 30px; padding: 2px 10px;
+    }
+
+    /* ── Social section ── */
+    #social { scroll-margin-top: 120px; }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 700px) {
+      .social-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .social-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .social-header {
+      padding: 20px 22px;
+      display: flex; align-items: center; gap: 14px;
+      color: white;
+    }
+    .ig-header { background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 55%, #fcb045 100%); }
+    .fb-header { background: linear-gradient(135deg, #1877f2 0%, #0d5bb5 100%); }
+
+    .social-avatar {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.5); object-fit: cover; flex-shrink: 0;
+    }
+    .social-avatar-ph {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,.3);
+      background: rgba(255,255,255,.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+    .fb-icon-ph {
+      width: 52px; height: 52px; border-radius: 12px;
+      background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+
+    .social-info { flex: 1; min-width: 0; }
+    .social-handle { font-size: 16px; font-weight: 700; }
+    .social-bio    { font-size: 11px; opacity: .8; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .social-score-badge {
+      flex-shrink: 0;
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; font-weight: 800;
+      background: rgba(255,255,255,.2); border: 2px solid rgba(255,255,255,.4);
+    }
+
+    .social-body { padding: 16px 20px; }
+
+    .social-stats {
+      display: flex; gap: 12px; margin-bottom: 16px;
+    }
+    .stat-box {
+      flex: 1; text-align: center;
+      background: var(--creme); border-radius: var(--radius-xs);
+      padding: 10px 6px;
+    }
+    .stat-value { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 700; color: var(--ink); }
+    .stat-label { font-size: 10px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .05em; margin-top: 2px; }
+
+    .social-missing-card {
+      padding: 32px 22px;
+      text-align: center;
+    }
+    .missing-icon { font-size: 32px; margin-bottom: 12px; display: block; }
+    .missing-title { font-weight: 700; font-size: 15px; color: var(--ink); margin-bottom: 6px; }
+    .missing-sub { font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+
+    .signal-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .signal-row:last-child { border-bottom: none; }
+    .signal-label { flex: 1; font-weight: 500; }
+    .signal-status { font-size: 12px; font-weight: 600; }
+    .signal-yes { color: var(--good); }
+    .signal-no  { color: var(--crit); }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0; transform: translateY(18px);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--ink);
+      color: rgba(255,255,255,.5);
+      padding: 24px 20px;
+      text-align: center;
+      font-size: 12px;
+    }
+    footer a { color: var(--terra-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ── Utility ── */
+    .sep {
+      height: 1px; background: var(--border); margin: 4px 0;
+    }
+
+    .col-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 699px) { .col-2 { grid-template-columns: 1fr; } }
+
+    .mt-4  { margin-top: 16px; }
+    .mt-6  { margin-top: 24px; }
+    .mt-8  { margin-top: 32px; }
+    .text-sm { font-size: 12px; }
+    .text-muted { color: var(--ink-2); }
+
+    .section-head { margin-bottom: 20px; }
+
+    @media (max-width: 480px) {
+      .header-domain { display: none; }
+      .hero-company { font-size: 20px; }
+      .score-ring { width: 120px; height: 120px; }
+      .score-ring-num { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-blob blob-1"></div>
+<div class="bg-blob blob-2"></div>
+
+<!-- ── Header ── -->
+<header>
+  <a href="/" class="header-logo"><img src="/static/logo.svg" alt="Scrapping Performance Tool"></a>
+  <nav class="header-nav">
+    <a href="/" class="nav-item">Accueil</a>
+    <a href="/reports" class="nav-item active">Audits</a>
+    <a href="/prospect" class="nav-item">Prospect</a>
+    <div class="nav-divider"></div>
+    {% if analysis.pdf_filename %}
+    <a href="/pdfs/{{ analysis.pdf_filename }}" class="btn btn-primary" target="_blank">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Télécharger PDF
+    </a>
+    {% endif %}
+    <a href="/logout" class="nav-logout" title="Déconnexion">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </a>
+  </nav>
+</header>
+
+<!-- ── Section nav ── -->
+<nav class="section-nav">
+  <a class="snav-link" href="#hero">Vue d'ensemble</a>
+  <a class="snav-link" href="#perf">⚡ Performance</a>
+  <a class="snav-link" href="#seo">🔍 SEO</a>
+  <a class="snav-link" href="#tech">🔧 Technique</a>
+  <a class="snav-link" href="#recs">📋 Recommandations</a>
+  <a class="snav-link" href="#social">📱 Social</a>
+</nav>
+
+<main class="main-layout">
+
+  <!-- ═══ HERO ═══ -->
+  <section id="hero">
+    <div class="section-head">
+      <div class="section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--terra)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
+        Vue d'ensemble
+      </div>
+      <h1 class="section-title">
+        {% if analysis.prospect and analysis.prospect.name and analysis.prospect.name != analysis.domain %}
+          {{ analysis.prospect.name }}
+        {% else %}
+          {{ analysis.domain }}
+        {% endif %}
+      </h1>
+      <p class="section-sub">Audit réalisé le {{ analysis.audit_date }} · {{ analysis.domain }}</p>
+    </div>
+
+    <div class="hero-grid reveal">
+      <!-- Screenshot hero -->
+      <div class="hero-main">
+        {% if analysis.screenshot %}
+          <img class="hero-screenshot-img" src="{{ analysis.screenshot }}" alt="Screenshot {{ analysis.domain }}">
+        {% endif %}
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+          <div class="hero-meta">Audit SEO &amp; Performance</div>
+          {% if analysis.prospect and analysis.prospect.name and analysis.prospect.name != analysis.domain %}
+          <div class="hero-company">{{ analysis.prospect.name }}</div>
+          {% endif %}
+          <div class="hero-domain-tag">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            {{ analysis.domain }}
+          </div>
+          {% if analysis.prospect %}
+          <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap;">
+            {% if analysis.prospect.address %}
+            <span style="font-size:11px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:4px;">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {{ analysis.prospect.address[:60] }}
+            </span>
+            {% endif %}
+            {% if analysis.prospect.rating %}
+            <span style="font-size:11px;color:rgba(255,255,255,.6);display:flex;align-items:center;gap:4px;">
+              ⭐ {{ analysis.prospect.rating }}{% if analysis.prospect.reviews_count %} ({{ analysis.prospect.reviews_count }} avis){% endif %}
+            </span>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Score panel -->
+      <div class="score-panel reveal">
+        {% set sc = analysis.global_score %}
+        {% set sc_cls = 'green' if sc >= 80 else ('yellow' if sc >= 50 else 'red') %}
+        {% set stroke_color = '#4a7c59' if sc >= 80 else ('#a0692a' if sc >= 50 else '#b84040') %}
+        {% set circumference = 345.4 %}
+        {% set dash = (sc / 100 * circumference)|round(1) %}
+
+        <div class="score-ring">
+          <svg class="score-ring-svg" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="55" fill="none" stroke="var(--creme)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="55" fill="none" stroke="{{ stroke_color }}" stroke-width="8"
+              stroke-dasharray="{{ dash }} {{ circumference }}"
+              stroke-dashoffset="{{ circumference * 0.25 }}"
+              stroke-linecap="round"
+              transform="rotate(-90 60 60)"/>
+          </svg>
+          <span class="score-ring-num {{ sc_cls }}">{{ sc }}</span>
+          <span class="score-ring-denom">/100</span>
+        </div>
+
+        <div class="score-verdict">
+          {% if sc >= 80 %}Bonne base — quelques opportunités manquées
+          {% elif sc >= 50 %}Plusieurs axes d'amélioration identifiés
+          {% else %}Problèmes critiques — visibilité fortement freinée{% endif %}
+        </div>
+
+        <div class="score-pills">
+          {% for key, lbl in [('performance', 'Perf.'), ('seo', 'SEO'), ('accessibility', 'Accès.'), ('best_practices', 'Best Pract.')] %}
+          {% set v = analysis.verdicts[key] %}
+          {% set vc = 'green' if v.score >= 80 else ('yellow' if v.score >= 50 else 'red') %}
+          <div class="score-pill">
+            <span class="pill-val {{ vc }}">{{ v.score }}</span>
+            <span class="pill-label">{{ lbl }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Top 3 issues -->
+    {% if analysis.top_3_issues %}
+    <div class="issues-grid mt-6 reveal">
+      {% for issue in analysis.top_3_issues %}
+      <div class="issue-row {{ issue.severity }}">
+        <div class="issue-icon-wrap">
+          {% if issue.severity == 'critical' %}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--crit)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          {% elif issue.severity == 'warning' %}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          {% else %}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          {% endif %}
+        </div>
+        <div>
+          <div class="issue-title">{{ issue.title }}</div>
+          <div class="issue-msg">{{ issue.message }}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- ═══ PERFORMANCE ═══ -->
+  <section id="perf">
+    <div class="section-head reveal">
+      <div class="section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--terra)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
+        Performance
+      </div>
+      <h2 class="section-title">Core Web Vitals</h2>
+      <p class="section-sub">Indicateurs de qualité d'expérience utilisateur mesurés par Google</p>
+    </div>
+
+    {% set cwv_data = [
+      ('LCP', analysis.verdicts.lcp.value, 's', '≤ 2.5s', analysis.verdicts.lcp.rating, '🖼'),
+      ('CLS', analysis.verdicts.cls.value, '', '≤ 0.1',  analysis.verdicts.cls.rating, '📐'),
+      ('TBT', analysis.verdicts.tbt.value, 'ms', '≤ 200ms', analysis.verdicts.tbt.rating, '⏱'),
+    ] %}
+
+    <div class="cwv-grid reveal">
+      <!-- Lighthouse scores pills first -->
+      {% for key, lbl in [('performance', 'Performance'), ('seo', 'SEO'), ('accessibility', 'Accessibilité'), ('best_practices', 'Bonnes pratiques')] %}
+      {% set v = analysis.verdicts[key] %}
+      {% set vc = 'green' if v.score >= 80 else ('yellow' if v.score >= 50 else 'red') %}
+      <div class="cwv-card">
+        <div class="cwv-label">{{ lbl }}</div>
+        <div class="cwv-value {{ vc }}">{{ v.score }}</div>
+        <div class="cwv-threshold">/100 Lighthouse</div>
+        <span class="cwv-rating {{ vc }}">
+          {% if v.score >= 80 %}Bon
+          {% elif v.score >= 50 %}À améliorer
+          {% else %}Critique{% endif %}
+        </span>
+      </div>
+      {% endfor %}
+
+      {% for name, value, unit, threshold, rating, icon in cwv_data %}
+      {% set vc = 'green' if rating == 'good' else ('yellow' if rating == 'needs-improvement' else 'red') %}
+      <div class="cwv-card">
+        <div class="cwv-label">{{ icon }} {{ name }}</div>
+        <div class="cwv-value {{ vc }}">{{ value if value is not none else '—' }}{% if value is not none %}{{ unit }}{% endif %}</div>
+        <div class="cwv-threshold">Cible {{ threshold }}</div>
+        <span class="cwv-rating {{ vc }}">
+          {% if rating == 'good' %}Bon
+          {% elif rating == 'needs-improvement' %}À améliorer
+          {% else %}Critique{% endif %}
+        </span>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if analysis.raw.pagespeed.diagnostics %}
+    <div class="card mt-6 reveal">
+      <div class="card-body">
+        <h3 style="font-family:'Fraunces',serif;font-size:17px;font-weight:700;color:var(--ink);margin-bottom:12px;">
+          Diagnostics Lighthouse
+        </h3>
+        <div class="diag-list">
+          {% for diag in analysis.raw.pagespeed.diagnostics[:8] %}
+          <div class="diag-item">
+            <div class="diag-icon">⚡</div>
+            <div class="diag-body">
+              <div class="diag-title">{{ diag.title }}</div>
+              {% if diag.display_value %}
+              <div class="diag-val">{{ diag.display_value }}</div>
+              {% endif %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  <!-- ═══ SEO ═══ -->
+  <section id="seo">
+    <div class="section-head reveal">
+      <div class="section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--terra)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
+        SEO
+      </div>
+      <h2 class="section-title">SEO On-Page</h2>
+      <p class="section-sub">Balises, structure et signaux de pertinence analysés</p>
+    </div>
+
+    <div class="card reveal">
+      <table class="audit-table">
+        <thead>
+          <tr>
+            <th>Élément</th>
+            <th>Contenu</th>
+            <th>Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Title -->
+          <tr>
+            <td class="td-label">Title</td>
+            <td>
+              {{ analysis.raw.onpage.title[:80] or '(absent)' }}
+              <span class="td-sub">{{ analysis.raw.onpage.title_length }} caractères</span>
+            </td>
+            <td>
+              {% if not analysis.raw.onpage.title %}
+                <span class="badge badge-crit">Absent</span>
+              {% elif analysis.raw.onpage.title_length > 60 %}
+                <span class="badge badge-warn">Trop long</span>
+              {% else %}
+                <span class="badge badge-good">✓ OK</span>
+              {% endif %}
+            </td>
+          </tr>
+          <!-- Meta desc -->
+          <tr>
+            <td class="td-label">Meta Description</td>
+            <td>
+              {{ analysis.raw.onpage.meta_description[:130] or '(absente)' }}
+              <span class="td-sub">{{ analysis.raw.onpage.meta_description_length }} caractères</span>
+            </td>
+            <td>
+              {% if not analysis.raw.onpage.meta_description %}
+                <span class="badge badge-crit">Absente</span>
+              {% elif analysis.raw.onpage.meta_description_length < 120 %}
+                <span class="badge badge-warn">Trop courte</span>
+              {% elif analysis.raw.onpage.meta_description_length > 160 %}
+                <span class="badge badge-warn">Trop longue</span>
+              {% else %}
+                <span class="badge badge-good">✓ OK</span>
+              {% endif %}
+            </td>
+          </tr>
+          <!-- H1 -->
+          <tr>
+            <td class="td-label">H1</td>
+            <td>{{ analysis.raw.onpage.h1|join(', ') if analysis.raw.onpage.h1 else '(absent)' }}</td>
+            <td>
+              {% if analysis.raw.onpage.h1_count == 0 %}
+                <span class="badge badge-crit">Absent</span>
+              {% elif analysis.raw.onpage.h1_count > 1 %}
+                <span class="badge badge-warn">{{ analysis.raw.onpage.h1_count }} H1</span>
+              {% else %}
+                <span class="badge badge-good">✓ OK</span>
+              {% endif %}
+            </td>
+          </tr>
+          <!-- Images -->
+          <tr>
+            <td class="td-label">Images</td>
+            <td>
+              {{ analysis.raw.onpage.images_total }} images
+              <span class="td-sub">{{ analysis.raw.onpage.images_missing_alt }} sans attribut alt</span>
+            </td>
+            <td>
+              {% if analysis.raw.onpage.images_missing_alt > 0 %}
+                <span class="badge badge-warn">Alt manquants</span>
+              {% else %}
+                <span class="badge badge-good">✓ OK</span>
+              {% endif %}
+            </td>
+          </tr>
+          <!-- Viewport -->
+          <tr>
+            <td class="td-label">Viewport</td>
+            <td>{{ 'Balise présente' if analysis.raw.onpage.has_viewport else 'Balise absente' }}</td>
+            <td>
+              {% if analysis.raw.onpage.has_viewport %}
+                <span class="badge badge-good">✓ Responsive</span>
+              {% else %}
+                <span class="badge badge-crit">Non responsive</span>
+              {% endif %}
+            </td>
+          </tr>
+          <!-- Canonical -->
+          <tr>
+            <td class="td-label">Canonical</td>
+            <td>{{ analysis.raw.onpage.canonical_url[:70] or '(absente)' }}</td>
+            <td>
+              {% if analysis.raw.onpage.canonical_url %}
+                <span class="badge badge-good">✓ OK</span>
+              {% else %}
+                <span class="badge badge-warn">Absente</span>
+              {% endif %}
+            </td>
+          </tr>
+          <!-- Open Graph -->
+          <tr>
+            <td class="td-label">Open Graph</td>
+            <td>{{ 'Balises complètes' if analysis.raw.onpage.og_complete else 'Balises incomplètes' }}</td>
+            <td>
+              {% if analysis.raw.onpage.og_complete %}
+                <span class="badge badge-good">✓ Complet</span>
+              {% else %}
+                <span class="badge badge-warn">Incomplet</span>
+              {% endif %}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ TECHNICAL ═══ -->
+  <section id="tech">
+    <div class="section-head reveal">
+      <div class="section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--terra)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
+        Technique
+      </div>
+      <h2 class="section-title">Checklist Technique</h2>
+      <p class="section-sub">Fondamentaux techniques qui impactent l'indexation et la confiance Google</p>
+    </div>
+
+    <div class="checklist-grid reveal">
+      <!-- HTTPS -->
+      <div class="check-card">
+        <div class="check-icon {{ 'pass' if analysis.raw.technical.is_https else 'fail' }}">
+          {{ '🔒' if analysis.raw.technical.is_https else '⚠️' }}
+        </div>
+        <div>
+          <div class="check-name">HTTPS</div>
+          <div class="check-detail">{{ 'Certificat SSL actif' if analysis.raw.technical.is_https else 'HTTPS non activé — critique' }}</div>
+        </div>
+      </div>
+      <!-- robots.txt -->
+      <div class="check-card">
+        <div class="check-icon {{ 'pass' if analysis.raw.technical.has_robots else 'fail' }}">
+          {{ '🤖' if analysis.raw.technical.has_robots else '❌' }}
+        </div>
+        <div>
+          <div class="check-name">robots.txt</div>
+          <div class="check-detail">{{ 'Fichier présent' if analysis.raw.technical.has_robots else 'Fichier absent' }}</div>
+        </div>
+      </div>
+      <!-- Sitemap -->
+      <div class="check-card">
+        <div class="check-icon {{ 'pass' if analysis.raw.technical.has_sitemap else 'fail' }}">
+          {{ '🗺' if analysis.raw.technical.has_sitemap else '❌' }}
+        </div>
+        <div>
+          <div class="check-name">sitemap.xml</div>
+          <div class="check-detail">
+            {% if analysis.raw.technical.has_sitemap %}
+              Présent — {{ analysis.raw.technical.sitemap_urls_count }} URL(s)
+            {% else %}
+              Absent — indexation limitée
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- Schema.org -->
+      <div class="check-card">
+        <div class="check-icon {{ 'pass' if analysis.raw.technical.has_schema else 'fail' }}">
+          {{ '📋' if analysis.raw.technical.has_schema else '❌' }}
+        </div>
+        <div>
+          <div class="check-name">Schema.org</div>
+          <div class="check-detail">
+            {% if analysis.raw.technical.has_schema %}
+              {{ analysis.raw.technical.schema_types|join(', ') }}
+            {% else %}
+              JSON-LD absent — rich snippets manqués
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      <!-- Response time -->
+      {% set rt = analysis.raw.technical.response_time_ms or 0 %}
+      <div class="check-card">
+        <div class="check-icon {{ 'pass' if rt < 3000 else 'fail' }}">
+          {{ '⚡' if rt < 1000 else ('🐢' if rt >= 3000 else '⏱') }}
+        </div>
+        <div>
+          <div class="check-name">Temps de réponse</div>
+          <div class="check-detail">{{ rt }}ms{% if rt >= 3000 %} — trop lent{% endif %}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ RECOMMENDATIONS ═══ -->
+  <section id="recs">
+    <div class="section-head reveal">
+      <div class="section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--terra)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
+        Actions
+      </div>
+      <h2 class="section-title">Recommandations priorisées</h2>
+      <p class="section-sub">Classées par priorité et impact estimé</p>
+    </div>
+
+    <div class="rec-list reveal">
+      {% for rec in analysis.recommendations %}
+      {% set pc = 'prio-high' if rec.priority == 'high' else ('prio-medium' if rec.priority == 'medium' else 'prio-low') %}
+      {% set pl = 'HAUTE' if rec.priority == 'high' else ('MED.' if rec.priority == 'medium' else 'BAS') %}
+      <div class="rec-card">
+        <div class="rec-prio {{ pc }}">{{ pl }}</div>
+        <div class="rec-body">
+          <div class="rec-title">{{ rec.title }}</div>
+          <div class="rec-desc">{{ rec.description }}</div>
+          <div class="rec-meta">
+            <span>📁 {{ rec.category }}</span>
+            <span>🔧 Effort : {{ rec.effort }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ═══ SOCIAL ═══ -->
+  <section id="social">
+    <div class="section-head reveal">
+      <div class="section-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="var(--terra)" stroke="none"><circle cx="12" cy="12" r="10"/></svg>
+        Social
+      </div>
+      <h2 class="section-title">Présence sociale</h2>
+      <p class="section-sub">Instagram et Facebook — signaux détectés depuis le site</p>
+    </div>
+
+    {% set social = analysis.raw.social %}
+    {% set metrics = social.metrics if social.metrics else {} %}
+
+    <div class="social-grid reveal">
+
+      <!-- ── Instagram ── -->
+      <div class="social-card">
+        {% if social.instagram_linked and social.instagram_handle %}
+        <div class="social-header ig-header">
+          {% if metrics.profile_image %}
+            <img class="social-avatar" src="{{ metrics.profile_image }}" alt="@{{ social.instagram_handle }}">
+          {% else %}
+            <div class="social-avatar-ph">📷</div>
+          {% endif %}
+          <div class="social-info">
+            <div class="social-handle">@{{ social.instagram_handle }}</div>
+            {% if metrics.title %}<div class="social-bio">{{ metrics.title }}</div>{% endif %}
+          </div>
+          <div class="social-score-badge">{{ analysis.social_score }}</div>
+        </div>
+        <div class="social-body">
+          {% if metrics.found %}
+          <div class="social-stats">
+            <div class="stat-box">
+              <div class="stat-value">{{ "{:,}".format(metrics.followers) if metrics.followers is not none else "—" }}</div>
+              <div class="stat-label">Abonnés</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">{{ metrics.posts if metrics.posts is not none else "—" }}</div>
+              <div class="stat-label">Posts</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-value">{{ "{:,}".format(metrics.following) if metrics.following is not none else "—" }}</div>
+              <div class="stat-label">Suivis</div>
+            </div>
+          </div>
+          {% endif %}
+
+          {% if social.issues %}
+          {% for issue in social.issues %}
+          <div class="issue-row {{ issue.severity }}" style="margin-top:8px;">
+            <div class="issue-msg">{{ issue.message }}</div>
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          <div style="margin-top:12px;">
+            <div class="signal-row">
+              <span class="signal-label">Lien sur le site</span>
+              <span class="signal-status signal-yes">✓ Présent</span>
+            </div>
+            {% if metrics.bio %}
+            <div class="signal-row">
+              <span class="signal-label">Bio</span>
+              <span class="signal-status text-muted text-sm" style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ metrics.bio[:60] }}</span>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% else %}
+        <div class="social-header ig-header" style="opacity:.7;">
+          <div class="social-avatar-ph">📷</div>
+          <div class="social-info">
+            <div class="social-handle">Instagram</div>
+          </div>
+        </div>
+        <div class="social-missing-card">
+          <span class="missing-icon">📵</span>
+          <div class="missing-title">Aucun lien Instagram détecté</div>
+          <div class="missing-sub">Instagram est le réseau n°1 pour l'immobilier résidentiel. L'absence de lien visible prive vos visiteurs d'un canal de confiance essentiel.</div>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- ── Facebook ── -->
+      <div class="social-card">
+        {% if social.facebook_linked %}
+        <div class="social-header fb-header">
+          <div class="fb-icon-ph">f</div>
+          <div class="social-info">
+            <div class="social-handle">
+              {{ social.facebook_name if social.facebook_name else (social.facebook_slug or 'Page Facebook') }}
+            </div>
+            <div class="social-bio">{{ social.facebook_url[:50] if social.facebook_url }}</div>
+          </div>
+          <div class="social-score-badge">{{ social.facebook_score }}</div>
+        </div>
+        <div class="social-body">
+          <div class="signal-row">
+            <span class="signal-label">Lien Facebook</span>
+            <span class="signal-status signal-yes">✓ Présent</span>
+          </div>
+          <div class="signal-row">
+            <span class="signal-label">Messenger</span>
+            {% if social.messenger.found %}
+              <span class="signal-status signal-yes">✓ {{ social.messenger.type }}</span>
+            {% else %}
+              <span class="signal-status signal-no">✗ Absent</span>
+            {% endif %}
+          </div>
+          <div class="signal-row">
+            <span class="signal-label">Facebook Pixel</span>
+            {% if social.pixel %}
+              <span class="signal-status signal-yes">✓ Actif</span>
+            {% else %}
+              <span class="signal-status signal-no">✗ Absent</span>
+            {% endif %}
+          </div>
+          <p style="margin-top:12px;font-size:11px;color:var(--ink-3);font-style:italic;">
+            Les métriques de la page (abonnés, dernier post) nécessitent un accès authentifié.
+          </p>
+        </div>
+        {% else %}
+        <div class="social-header fb-header" style="opacity:.7;">
+          <div class="fb-icon-ph">f</div>
+          <div class="social-info">
+            <div class="social-handle">Facebook</div>
+          </div>
+        </div>
+        <div class="social-missing-card">
+          <span class="missing-icon">📵</span>
+          <div class="missing-title">Aucun lien Facebook détecté</div>
+          <div class="missing-sub">Facebook est le canal n°1 de génération de leads pour l'immobilier local. L'absence de lien prive vos prospects d'un levier de contact essentiel.</div>
+        </div>
+        {% if social.messenger.found or social.pixel %}
+        <div class="social-body" style="padding-top:0;">
+          {% if social.messenger.found %}
+          <div class="signal-row">
+            <span class="signal-label">Messenger</span>
+            <span class="signal-status signal-yes">✓ {{ social.messenger.type }}</span>
+          </div>
+          {% endif %}
+          {% if social.pixel %}
+          <div class="signal-row">
+            <span class="signal-label">Facebook Pixel</span>
+            <span class="signal-status signal-yes">✓ Actif</span>
+          </div>
+          {% endif %}
+        </div>
+        {% endif %}
+        {% endif %}
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    Généré par <a href="/">Scrapping Performance Tool</a> ·
+    <a href="/reports">Tous les rapports</a>
+  </p>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Active section nav
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.snav-link');
+
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.snav-link[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-50% 0px -40% 0px' });
+
+  sections.forEach(s => sectionObserver.observe(s));
+</script>
+
+</body>
+</html>

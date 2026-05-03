@@ -170,6 +170,12 @@ def index():
     return render_template("index.html", user_email=session.get("user_email"))
 
 
+@app.route("/prospect")
+@login_required
+def prospect():
+    return render_template("index.html", user_email=session.get("user_email"), active_tab="prospect")
+
+
 @app.route("/api/audit/start", methods=["POST"])
 @login_required
 def start_audit():
