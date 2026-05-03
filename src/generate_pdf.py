@@ -25,9 +25,20 @@ def load_config() -> dict:
         return yaml.safe_load(f)
 
 
+def _render_html(analysis: dict) -> str:
+    """Rend le template Jinja2 avec les données d'analyse."""
+    config = load_config()
+    pdf_config = config.get("pdf", {})
+    auditor = pdf_config.get("auditor", {})
+    cta = pdf_config.get("cta", {})
+    env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)))
+    template = env.get_template("audit.html")
+    return template.render(analysis=analysis, auditor=auditor, cta=cta)
+
+
 def generate_pdf(analysis: dict, output_path: str | None = None) -> str:
     """
-    Génère le PDF d'audit à partir des données d'analyse.
+    Génère le PDF et le HTML d'audit à partir des données d'analyse.
 
     Args:
         analysis: Résultat de analyze_audit()
@@ -41,18 +52,7 @@ def generate_pdf(analysis: dict, output_path: str | None = None) -> str:
 
     config = load_config()
     pdf_config = config.get("pdf", {})
-    auditor = pdf_config.get("auditor", {})
-    cta = pdf_config.get("cta", {})
-
-    # Charger et rendre le template
-    env = Environment(loader=FileSystemLoader(str(TEMPLATE_DIR)))
-    template = env.get_template("audit.html")
-
-    html_content = template.render(
-        analysis=analysis,
-        auditor=auditor,
-        cta=cta,
-    )
+    html_content = _render_html(analysis)
 
     # Chemin de sortie
     if not output_path:
@@ -60,6 +60,17 @@ def generate_pdf(analysis: dict, output_path: str | None = None) -> str:
         output_dir.mkdir(parents=True, exist_ok=True)
         domain_slug = re.sub(r"[^a-zA-Z0-9]", "_", analysis.get("domain", "site"))
         output_path = str(output_dir / f"audit_{domain_slug}.pdf")
+
+    # Sauvegarder le HTML rendu
+    html_dir = Path(__file__).parent.parent / "output" / "html"
+    html_dir.mkdir(parents=True, exist_ok=True)
+    html_slug = Path(output_path).stem  # audit_domain
+    html_path = html_dir / f"{html_slug}.html"
+
+    # Réécrire les chemins d'assets pour le HTML web (logo)
+    web_html = html_content.replace('src="logo.svg"', 'src="/static/logo.svg"')
+    html_path.write_text(web_html, encoding="utf-8")
+    logger.info(f"HTML sauvegardé → {html_path}")
 
     # Générer le PDF
     logger.info(f"Génération PDF → {output_path}")

@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, Response, jsonify, render_template, request, send_file
+from flask import Flask, Response, jsonify, render_template, request, send_file, send_from_directory
 from loguru import logger
 
 load_dotenv()
@@ -24,6 +24,8 @@ from generate_pdf import generate_pdf
 BASE_DIR = Path(__file__).parent.parent
 OUTPUT_DIR = BASE_DIR / "output"
 PDFS_DIR = OUTPUT_DIR / "pdfs"
+HTML_DIR = OUTPUT_DIR / "html"
+STATIC_DIR = BASE_DIR / "templates"
 SUMMARY_PATH = OUTPUT_DIR / "summary.json"
 
 app = Flask(__name__, template_folder=str(BASE_DIR / "templates"))
@@ -56,11 +58,13 @@ def _run_audit_job(job_id: str, query: str | None, url: str | None, limit: int) 
             audit_data = run_full_audit(url)
             analysis = analyze_audit(audit_data)
             pdf_path = generate_pdf(analysis)
+            slug = Path(pdf_path).stem
             results.append({
                 "name": url,
                 "website": url,
                 "score": analysis["global_score"],
                 "pdf": str(pdf_path),
+                "html_slug": slug,
                 "issues": analysis["issue_counts"],
             })
             logger.success(f"Score : {analysis['global_score']}/100 — PDF généré")
@@ -99,11 +103,13 @@ def _run_audit_job(job_id: str, query: str | None, url: str | None, limit: int) 
                         "reviews_count": prospect.get("reviews_count", ""),
                     }
                     pdf_path = generate_pdf(analysis)
+                    slug = Path(pdf_path).stem
                     results.append({
                         "name": name,
                         "website": website,
                         "score": analysis["global_score"],
                         "pdf": str(pdf_path),
+                        "html_slug": slug,
                         "issues": analysis["issue_counts"],
                     })
                     logger.success(f"[{i+1}] ✅ {name} — Score: {analysis['global_score']}/100")
@@ -209,6 +215,20 @@ def stream_logs(job_id: str):
     )
 
 
+@app.route("/reports")
+def reports_page():
+    """Page listant tous les rapports archivés."""
+    reports = []
+    if SUMMARY_PATH.exists():
+        with open(SUMMARY_PATH, encoding="utf-8") as f:
+            reports = json.load(f)
+        for r in reports:
+            if r.get("pdf"):
+                r["pdf_filename"] = Path(r["pdf"]).name
+            r["html_available"] = bool(r.get("html_slug") and (HTML_DIR / f"{r['html_slug']}.html").exists())
+    return render_template("reports.html", reports=reports)
+
+
 @app.route("/api/audits")
 def list_audits():
     if not SUMMARY_PATH.exists():
@@ -222,6 +242,7 @@ def list_audits():
             item["pdf_filename"] = Path(item["pdf"]).name
         else:
             item["pdf_filename"] = None
+        item["html_available"] = bool(item.get("html_slug") and (HTML_DIR / f"{item['html_slug']}.html").exists())
 
     return jsonify(data)
 
@@ -232,6 +253,20 @@ def serve_pdf(filename: str):
     if not pdf_path.exists():
         return "PDF introuvable", 404
     return send_file(pdf_path, mimetype="application/pdf")
+
+
+@app.route("/reports/<slug>")
+def serve_report_html(slug: str):
+    """Affiche le rapport HTML dans le navigateur."""
+    html_path = HTML_DIR / f"{slug}.html"
+    if not html_path.exists():
+        return "Rapport introuvable", 404
+    return send_file(html_path, mimetype="text/html")
+
+
+@app.route("/static/<path:filename>")
+def serve_static(filename: str):
+    return send_from_directory(STATIC_DIR, filename)
 
 
 if __name__ == "__main__":

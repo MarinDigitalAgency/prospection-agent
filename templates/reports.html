@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rapports archivés — Scrapping Performance Tool</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      padding: 32px 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 36px;
+    }
+
+    header img { height: 40px; width: auto; }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #f8fafc;
+    }
+
+    header a {
+      margin-left: auto;
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    header a:hover { text-decoration: underline; }
+
+    .empty {
+      text-align: center;
+      color: #64748b;
+      margin-top: 80px;
+      font-size: 1.1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    thead tr {
+      background: #0f172a;
+      border-bottom: 1px solid #334155;
+    }
+
+    th {
+      padding: 14px 18px;
+      text-align: left;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #94a3b8;
+    }
+
+    td {
+      padding: 14px 18px;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #1e293b;
+      vertical-align: middle;
+    }
+
+    tbody tr { background: #1e293b; transition: background 0.15s; }
+    tbody tr:hover { background: #263348; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    .score-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .score-green { background: #14532d; color: #4ade80; }
+    .score-yellow { background: #713f12; color: #fbbf24; }
+    .score-red { background: #7f1d1d; color: #f87171; }
+    .score-na { background: #1e293b; color: #64748b; }
+
+    .website-link {
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .website-link:hover { text-decoration: underline; }
+
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s;
+    }
+
+    .btn:hover { opacity: 0.85; }
+    .btn-html { background: #1d4ed8; color: #fff; }
+    .btn-pdf  { background: #7c3aed; color: #fff; }
+    .btn-disabled { background: #1e293b; color: #475569; cursor: not-allowed; border: 1px solid #334155; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="/static/logo.svg" alt="Scrapping Performance Tool">
+  <h1>Rapports archivés</h1>
+  <a href="/">← Nouvel audit</a>
+</header>
+
+{% if not reports %}
+  <p class="empty">Aucun rapport disponible. Lance ton premier audit depuis <a href="/" style="color:#60a5fa">l'accueil</a>.</p>
+{% else %}
+<table>
+  <thead>
+    <tr>
+      <th>Entreprise</th>
+      <th>Site web</th>
+      <th>Score</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for r in reports %}
+    <tr>
+      <td>{{ r.name }}</td>
+      <td>
+        {% if r.website %}
+          <a class="website-link" href="{{ r.website }}" target="_blank">{{ r.website | replace('https://', '') | replace('http://', '') }}</a>
+        {% else %}—{% endif %}
+      </td>
+      <td>
+        {% if r.score is not none %}
+          <span class="score-badge {% if r.score >= 80 %}score-green{% elif r.score >= 50 %}score-yellow{% else %}score-red{% endif %}">
+            {{ r.score }}/100
+          </span>
+        {% else %}
+          <span class="score-badge score-na">Erreur</span>
+        {% endif %}
+      </td>
+      <td>
+        <div class="actions">
+          {% if r.html_available %}
+            <a class="btn btn-html" href="/reports/{{ r.html_slug }}" target="_blank">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              Voir HTML
+            </a>
+          {% else %}
+            <span class="btn btn-disabled">Voir HTML</span>
+          {% endif %}
+
+          {% if r.pdf_filename %}
+            <a class="btn btn-pdf" href="/pdfs/{{ r.pdf_filename }}" target="_blank">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              PDF
+            </a>
+          {% else %}
+            <span class="btn btn-disabled">PDF</span>
+          {% endif %}
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+</body>
+</html>

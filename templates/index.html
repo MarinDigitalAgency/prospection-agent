@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Agent SEO Immobilier</title>
+  <title>Scrapping Performance Tool</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -37,13 +37,17 @@
       align-items: center;
       gap: 12px;
     }
-    .logo {
-      width: 36px; height: 36px;
-      background: var(--accent);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
+    header .nav-reports {
+      margin-left: auto;
+      color: #60a5fa;
+      text-decoration: none;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
+    header .nav-reports:hover { text-decoration: underline; }
+    .logo img { height: 36px; width: auto; display: block; }
     header h1 { font-size: 16px; font-weight: 600; }
     header span { color: var(--muted); font-size: 13px; margin-left: 4px; }
 
@@ -298,10 +302,14 @@
 <body>
 
 <header>
-  <div class="logo">🏠</div>
+  <div class="logo"><img src="/static/logo.svg" alt="Marin Digital"></div>
   <div>
-    <h1>Agent SEO Immobilier <span>— Prospection automatique</span></h1>
+    <h1>Scrapping Performance Tool</h1>
   </div>
+  <a href="/reports" class="nav-reports">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Rapports archivés
+  </a>
 </header>
 
 <main>
