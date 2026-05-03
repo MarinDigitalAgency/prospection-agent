@@ -186,6 +186,8 @@ def analyze_audit(audit_data: dict) -> dict:
             "warning": summary.get("warnings", 0),
             "info": summary.get("info", 0),
         },
+        # Screenshot pour la page de couverture
+        "screenshot": audit_data.get("pagespeed", {}).get("screenshot"),
         # Passer les données brutes pour le PDF
         "raw": audit_data,
     }

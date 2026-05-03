@@ -114,10 +114,21 @@ def get_pagespeed_data(url: str, api_key: str | None = None) -> dict:
                 "display_value": audit.get("displayValue", ""),
             })
 
+    # Screenshot depuis Lighthouse (final-screenshot = viewport, full-page-screenshot = page entière)
+    screenshot = None
+    final_ss = audits.get("final-screenshot", {})
+    if final_ss.get("details", {}).get("data"):
+        screenshot = final_ss["details"]["data"]
+    else:
+        full_ss = audits.get("full-page-screenshot", {})
+        if full_ss.get("details", {}).get("screenshot", {}).get("data"):
+            screenshot = full_ss["details"]["screenshot"]["data"]
+
     return {
         "scores": scores,
         "core_web_vitals": cwv,
         "diagnostics": diagnostics,
+        "screenshot": screenshot,
     }
 
 

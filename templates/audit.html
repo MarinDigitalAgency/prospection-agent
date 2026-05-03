@@ -14,6 +14,11 @@
     }
   }
 
+  @page cover {
+    size: A4 landscape;
+    margin: 0;
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
@@ -23,182 +28,236 @@
     line-height: 1.5;
   }
 
-  /* ═══ PAGE 1 : SYNTHÈSE ═══ */
+  /* ═══ PAGE 1 : COUVERTURE REDESIGNÉE ═══ */
   .cover {
+    page: cover;
     page-break-after: always;
-    min-height: 100%;
+    width: 297mm;
+    height: 210mm;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    overflow: hidden;
   }
 
-  .cover-logo {
-    padding: 20px 24px 0 24px;
-  }
-
-  .agency-logo {
-    height: 48px;
-    width: auto;
-  }
-
-  .cover-header {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
-    color: white;
-    padding: 30px 35px;
-    border-radius: 12px;
-    margin-bottom: 25px;
-  }
-
-  .cover-header h1 {
-    font-size: 22pt;
-    font-weight: 700;
-    margin-bottom: 4px;
-    letter-spacing: -0.5px;
-  }
-
-  .cover-header .subtitle {
-    font-size: 11pt;
-    color: #93c5fd;
-    font-weight: 400;
-  }
-
-  .cover-header .audit-date {
-    font-size: 8pt;
-    color: #64748b;
-    margin-top: 10px;
-  }
-
-  .cover-header .company-name {
-    font-size: 20pt;
-    color: #ffffff;
-    margin-top: 16px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-  }
-
-  .cover-header .domain {
-    font-size: 13pt;
-    color: #e2e8f0;
-    margin-top: 4px;
-    font-weight: 500;
-  }
-
-  /* Score global */
-  .score-hero {
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    margin-bottom: 30px;
-  }
-
-  .score-circle {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    font-weight: 800;
-    font-size: 28pt;
-    color: white;
+  /* ── Colonne gauche : hero screenshot ── */
+  .cover-hero {
+    position: relative;
+    width: 42%;
+    height: 210mm;
+    overflow: hidden;
+    background: #0f172a;
     flex-shrink: 0;
   }
 
-  .score-circle.green { background: linear-gradient(135deg, #059669, #10b981); }
-  .score-circle.yellow { background: linear-gradient(135deg, #d97706, #f59e0b); }
-  .score-circle.red { background: linear-gradient(135deg, #dc2626, #ef4444); }
-
-  .score-circle small {
-    font-size: 9pt;
-    font-weight: 400;
-    opacity: 0.9;
+  .hero-screenshot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
   }
 
-  .score-summary h2 {
-    font-size: 14pt;
-    margin-bottom: 5px;
-    color: #0f172a;
+  .hero-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
   }
 
-  .score-summary p {
-    font-size: 10pt;
-    color: #64748b;
-  }
-
-  /* Scores catégories */
-  .category-scores {
+  .hero-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(15,23,42,0.55) 0%,
+      rgba(15,23,42,0.10) 40%,
+      rgba(15,23,42,0.70) 75%,
+      rgba(15,23,42,0.95) 100%
+    );
     display: flex;
-    gap: 12px;
-    margin-bottom: 30px;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22px 24px 26px 24px;
   }
 
-  .cat-score {
+  .hero-logo { height: 32px; width: auto; }
+
+  .hero-bottom {}
+
+  .hero-company {
+    font-size: 17pt;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+
+  .hero-domain {
+    font-size: 9pt;
+    color: #93c5fd;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .hero-date {
+    font-size: 7pt;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+  }
+
+  /* ── Colonne droite : score + problèmes ── */
+  .cover-panel {
     flex: 1;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 14px;
-    text-align: center;
+    background: #0f172a;
+    padding: 28px 30px 24px 30px;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    border-left: 1px solid rgba(255,255,255,0.06);
   }
 
-  .cat-score .cat-value {
+  .panel-title {
+    font-size: 8pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 14px;
+  }
+
+  /* Score géant */
+  .score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 0;
+    margin-bottom: 6px;
+  }
+
+  .score-number {
+    font-size: 96pt;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -4px;
+  }
+
+  .score-number.score-green { color: #34d399; }
+  .score-number.score-yellow { color: #fbbf24; }
+  .score-number.score-red { color: #f87171; }
+
+  .score-denom {
     font-size: 20pt;
+    font-weight: 300;
+    color: rgba(255,255,255,0.25);
+    margin-left: 4px;
+    align-self: flex-end;
+    padding-bottom: 14px;
+  }
+
+  .score-verdict {
+    font-size: 10pt;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 16px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  /* Pills catégories */
+  .score-pills {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .score-pill {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 20px;
+    padding: 5px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .pill-val {
+    font-size: 10pt;
     font-weight: 700;
   }
 
-  .cat-score .cat-label {
-    font-size: 8pt;
-    color: #64748b;
+  .pill-val.green { color: #34d399; }
+  .pill-val.yellow { color: #fbbf24; }
+  .pill-val.red { color: #f87171; }
+
+  .pill-label {
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.5);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 3px;
+    letter-spacing: 0.4px;
   }
 
-  .cat-value.green { color: #059669; }
-  .cat-value.yellow { color: #d97706; }
-  .cat-value.red { color: #dc2626; }
-
-  /* Top 3 problèmes */
-  .top-issues {
-    margin-bottom: 25px;
+  /* Cards top 3 */
+  .issues-section-title {
+    font-size: 7.5pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.30);
+    margin-bottom: 10px;
   }
 
-  .top-issues h2 {
-    font-size: 13pt;
-    margin-bottom: 12px;
-    color: #0f172a;
-    border-bottom: 2px solid #0f172a;
-    padding-bottom: 5px;
+  .issue-card-new {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border-left: 3px solid transparent;
   }
 
+  .issue-card-new.critical { border-left-color: #f87171; background: rgba(248,113,113,0.08); }
+  .issue-card-new.warning  { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); }
+  .issue-card-new.info     { border-left-color: #60a5fa; background: rgba(96,165,250,0.08); }
+
+  /* Cards pages internes */
   .issue-card {
     border-left: 4px solid;
-    padding: 12px 15px;
-    margin-bottom: 10px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
     border-radius: 0 6px 6px 0;
-    background: #fafafa;
   }
-
   .issue-card.critical { border-color: #dc2626; background: #fef2f2; }
-  .issue-card.warning { border-color: #d97706; background: #fffbeb; }
-  .issue-card.info { border-color: #3b82f6; background: #eff6ff; }
+  .issue-card.warning  { border-color: #d97706; background: #fffbeb; }
+  .issue-card.info     { border-color: #3b82f6; background: #eff6ff; }
+  .issue-card .issue-title   { font-weight: 700; font-size: 10pt; margin-bottom: 3px; }
+  .issue-card .issue-message { font-size: 9pt; color: #475569; }
+  .issue-card .issue-impact  { font-size: 8pt; color: #64748b; margin-top: 4px; font-style: italic; }
 
-  .issue-card .issue-title {
-    font-weight: 700;
-    font-size: 10pt;
-    margin-bottom: 3px;
+  .issue-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
   }
 
-  .issue-card .issue-message {
+  .issue-icon svg { display: block; }
+
+  .issue-body {}
+
+  .issue-title-new {
     font-size: 9pt;
-    color: #475569;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 2px;
+    line-height: 1.2;
   }
 
-  .issue-card .issue-impact {
-    font-size: 8pt;
-    color: #64748b;
-    margin-top: 4px;
-    font-style: italic;
+  .issue-msg {
+    font-size: 7.5pt;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.3;
   }
 
   /* ═══ PAGES DÉTAILS ═══ */
@@ -530,68 +589,87 @@
 <body>
 
 <!-- ═══════════════════════════════════════════ -->
-<!-- PAGE 1 : SYNTHÈSE (support du Loom)       -->
+<!-- PAGE 1 : COUVERTURE                       -->
 <!-- ═══════════════════════════════════════════ -->
 <div class="cover">
 
-  <div class="cover-logo">
-    <img src="logo.svg" alt="Marin Digital" class="agency-logo">
-  </div>
-
-  <div class="cover-header">
-    <h1>Mini-Audit SEO & Performance</h1>
-{% if analysis.prospect and analysis.prospect.name and analysis.prospect.name != analysis.domain %}
-    <div class="company-name">{{ analysis.prospect.name }}</div>
+  <!-- Colonne gauche : hero screenshot -->
+  <div class="cover-hero">
+    {% if analysis.screenshot %}
+      <img class="hero-screenshot" src="{{ analysis.screenshot }}" alt="Screenshot {{ analysis.domain }}">
+    {% else %}
+      <div class="hero-placeholder"></div>
     {% endif %}
-    <div class="domain">{{ analysis.domain }}</div>
-    <div class="audit-date">Audit réalisé le {{ analysis.audit_date }}</div>
-  </div>
-
-  <!-- Score global -->
-  <div class="score-hero">
-    <div class="score-circle {{ 'green' if analysis.global_score >= 80 else ('yellow' if analysis.global_score >= 50 else 'red') }}">
-      {{ analysis.global_score }}
-      <small>/100</small>
-    </div>
-    <div class="score-summary">
-      <h2>
-        {% if analysis.global_score >= 80 %}
-          Bonne base, mais des opportunités manquées
-        {% elif analysis.global_score >= 50 %}
-          Plusieurs axes d'amélioration identifiés
-        {% else %}
-          Des problèmes critiques freinent votre visibilité
+    <div class="hero-overlay">
+      <div class="hero-top">
+        <img src="logo.svg" alt="Marin Digital" class="hero-logo">
+      </div>
+      <div class="hero-bottom">
+        {% if analysis.prospect and analysis.prospect.name and analysis.prospect.name != analysis.domain %}
+        <div class="hero-company">{{ analysis.prospect.name }}</div>
         {% endif %}
-      </h2>
-      <p>{{ analysis.issue_counts.critical }} problème{{ 's' if analysis.issue_counts.critical > 1 }} critique{{ 's' if analysis.issue_counts.critical > 1 }},
-         {{ analysis.issue_counts.warning }} avertissement{{ 's' if analysis.issue_counts.warning > 1 }},
-         {{ analysis.issue_counts.info }} info{{ 's' if analysis.issue_counts.info > 1 }}</p>
+        <div class="hero-domain">{{ analysis.domain }}</div>
+        <div class="hero-date">Audit réalisé le {{ analysis.audit_date }}</div>
+      </div>
     </div>
   </div>
 
-  <!-- Scores catégories -->
-  <div class="category-scores">
-    {% for key in ['performance', 'seo', 'accessibility', 'best_practices'] %}
-    {% set v = analysis.verdicts[key] %}
-    <div class="cat-score">
-      <div class="cat-value {{ 'green' if v.score >= 90 else ('yellow' if v.score >= 50 else 'red') }}">{{ v.score }}</div>
-      <div class="cat-label">{{ v.label }}</div>
-    </div>
-    {% endfor %}
-  </div>
+  <!-- Colonne droite : score + problèmes -->
+  <div class="cover-panel">
+    <div class="panel-title">Audit SEO &amp; Performance</div>
 
-  <!-- Top 3 problèmes -->
-  <div class="top-issues">
-    <h2>🎯 Les 3 problèmes prioritaires</h2>
+    <!-- Score géant -->
+    {% set sc = analysis.global_score %}
+    {% set sc_cls = 'score-green' if sc >= 80 else ('score-yellow' if sc >= 50 else 'score-red') %}
+    <div class="score-display">
+      <span class="score-number {{ sc_cls }}">{{ sc }}</span>
+      <span class="score-denom">/100</span>
+    </div>
+    <div class="score-verdict">
+      {% if sc >= 80 %}Bonne base — quelques opportunités manquées
+      {% elif sc >= 50 %}Plusieurs axes d'amélioration identifiés
+      {% else %}Problèmes critiques — visibilité fortement freinée{% endif %}
+    </div>
+
+    <!-- Pills catégories -->
+    <div class="score-pills">
+      {% for key in ['performance', 'seo', 'accessibility', 'best_practices'] %}
+      {% set v = analysis.verdicts[key] %}
+      <div class="score-pill">
+        <span class="pill-val {{ 'green' if v.score >= 80 else ('yellow' if v.score >= 50 else 'red') }}">{{ v.score }}</span>
+        <span class="pill-label">{{ v.label }}</span>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Top 3 problèmes -->
+    <div class="issues-section-title">Problèmes prioritaires</div>
     {% for issue in analysis.top_3_issues %}
-    <div class="issue-card {{ issue.severity }}">
-      <div class="issue-title">{{ issue.title }}</div>
-      <div class="issue-message">{{ issue.message }}</div>
-      <div class="issue-impact">💡 {{ issue.impact }}</div>
+    {% set sev = issue.severity %}
+    <div class="issue-card-new {{ sev }}">
+      <div class="issue-icon">
+        {% if sev == 'critical' %}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        {% elif sev == 'warning' %}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        {% else %}
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+        </svg>
+        {% endif %}
+      </div>
+      <div class="issue-body">
+        <div class="issue-title-new">{{ issue.title }}</div>
+        <div class="issue-msg">{{ issue.message }}</div>
+      </div>
     </div>
     {% endfor %}
-  </div>
 
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════════════ -->
