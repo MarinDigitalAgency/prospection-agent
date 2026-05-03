@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 
 from dotenv import load_dotenv
-from flask import Flask, Response, jsonify, render_template, request, send_file, send_from_directory
+from flask import Flask, Response, jsonify, render_template, request, send_file
 from loguru import logger
 
 load_dotenv()
@@ -25,10 +25,14 @@ BASE_DIR = Path(__file__).parent.parent
 OUTPUT_DIR = BASE_DIR / "output"
 PDFS_DIR = OUTPUT_DIR / "pdfs"
 HTML_DIR = OUTPUT_DIR / "html"
-STATIC_DIR = BASE_DIR / "templates"
 SUMMARY_PATH = OUTPUT_DIR / "summary.json"
 
-app = Flask(__name__, template_folder=str(BASE_DIR / "templates"))
+app = Flask(
+    __name__,
+    template_folder=str(BASE_DIR / "templates"),
+    static_folder=str(BASE_DIR / "templates"),
+    static_url_path="/static",
+)
 
 # Active jobs: job_id -> {status, queue, result, error, ...}
 jobs: dict[str, dict] = {}
@@ -264,9 +268,6 @@ def serve_report_html(slug: str):
     return send_file(html_path, mimetype="text/html")
 
 
-@app.route("/static/<path:filename>")
-def serve_static(filename: str):
-    return send_from_directory(STATIC_DIR, filename)
 
 
 if __name__ == "__main__":
