@@ -3,32 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <style>
+  /* ── Palette ──────────────────────────────────────────────
+     creme       #f5f1e8   creme-dark  #ece6d8
+     terra       #d4715f   terra-dark  #b85b4a
+     sage        #8b9d83   sage-dark   #6d7f65
+     ink         #2c1810   ink-2       #7a6a5a   ink-3  #a8968a
+  ─────────────────────────────────────────────────────────── */
+
   @page {
     size: A4 landscape;
-    margin: 20mm 18mm 25mm 18mm;
+    margin: 18mm 18mm 22mm 18mm;
     @bottom-center {
       content: "Page " counter(page) " / " counter(pages);
-      font-size: 8pt;
-      color: #94a3b8;
-      font-family: 'Segoe UI', sans-serif;
+      font-size: 7pt;
+      color: #a8968a;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
     }
   }
 
-  @page cover {
-    size: A4 landscape;
-    margin: 0;
-  }
+  @page cover { size: A4 landscape; margin: 0; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-    font-size: 10pt;
-    color: #1e293b;
-    line-height: 1.5;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 9.5pt;
+    color: #2c1810;
+    line-height: 1.55;
+    background: #f5f1e8;
   }
 
-  /* ═══ PAGE 1 : COUVERTURE REDESIGNÉE ═══ */
+  /* ══════════════════════════════════════════════
+     PAGE 1 : COUVERTURE
+  ══════════════════════════════════════════════ */
   .cover {
     page: cover;
     page-break-after: always;
@@ -39,13 +46,13 @@
     overflow: hidden;
   }
 
-  /* ── Colonne gauche : hero screenshot ── */
+  /* ── Gauche : hero screenshot ── */
   .cover-hero {
     position: relative;
-    width: 42%;
+    width: 44%;
     height: 210mm;
     overflow: hidden;
-    background: #0f172a;
+    background: #2c1810;
     flex-shrink: 0;
   }
 
@@ -60,7 +67,7 @@
   .hero-placeholder {
     width: 100%;
     height: 100%;
-    background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%);
+    background: linear-gradient(160deg, #2c1810 0%, #4a3020 50%, #2c1810 100%);
   }
 
   .hero-overlay {
@@ -68,10 +75,10 @@
     top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(
       to bottom,
-      rgba(15,23,42,0.55) 0%,
-      rgba(15,23,42,0.10) 40%,
-      rgba(15,23,42,0.70) 75%,
-      rgba(15,23,42,0.95) 100%
+      rgba(44,24,16,0.60) 0%,
+      rgba(44,24,16,0.10) 35%,
+      rgba(44,24,16,0.65) 72%,
+      rgba(44,24,16,0.96) 100%
     );
     display: flex;
     flex-direction: column;
@@ -79,51 +86,49 @@
     padding: 22px 24px 26px 24px;
   }
 
-  .hero-logo { height: 32px; width: auto; }
-
-  .hero-bottom {}
+  .hero-logo { height: 30px; width: auto; }
 
   .hero-company {
-    font-size: 17pt;
-    font-weight: 800;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 18pt;
+    font-weight: bold;
     color: #ffffff;
-    letter-spacing: -0.3px;
-    line-height: 1.2;
-    margin-bottom: 4px;
+    line-height: 1.15;
+    margin-bottom: 5px;
   }
 
   .hero-domain {
-    font-size: 9pt;
-    color: #93c5fd;
+    font-size: 8.5pt;
+    color: #e8937f;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    letter-spacing: 0.2px;
   }
 
   .hero-date {
     font-size: 7pt;
-    color: rgba(255,255,255,0.45);
+    color: rgba(255,255,255,0.40);
     text-transform: uppercase;
-    letter-spacing: 0.6px;
+    letter-spacing: 0.8px;
   }
 
-  /* ── Colonne droite : score + problèmes ── */
+  /* ── Droite : score + problèmes ── */
   .cover-panel {
     flex: 1;
-    background: #0f172a;
-    padding: 28px 30px 24px 30px;
+    background: #f5f1e8;
+    padding: 26px 28px 22px 26px;
     display: flex;
     flex-direction: column;
-    color: white;
-    border-left: 1px solid rgba(255,255,255,0.06);
+    border-left: 3px solid #d4715f;
   }
 
-  .panel-title {
-    font-size: 8pt;
-    font-weight: 600;
+  .panel-tag {
+    font-size: 7pt;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: rgba(255,255,255,0.35);
-    margin-bottom: 14px;
+    letter-spacing: 1.4px;
+    color: #a8968a;
+    margin-bottom: 12px;
   }
 
   /* Score géant */
@@ -131,339 +136,341 @@
     display: flex;
     align-items: baseline;
     gap: 0;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
 
   .score-number {
-    font-size: 96pt;
-    font-weight: 900;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 90pt;
+    font-weight: bold;
     line-height: 1;
-    letter-spacing: -4px;
+    letter-spacing: -3px;
   }
 
-  .score-number.score-green { color: #34d399; }
-  .score-number.score-yellow { color: #fbbf24; }
-  .score-number.score-red { color: #f87171; }
+  .score-number.score-green  { color: #4a7c59; }
+  .score-number.score-yellow { color: #a0692a; }
+  .score-number.score-red    { color: #b84040; }
 
   .score-denom {
-    font-size: 20pt;
+    font-size: 18pt;
     font-weight: 300;
-    color: rgba(255,255,255,0.25);
+    color: #a8968a;
     margin-left: 4px;
     align-self: flex-end;
-    padding-bottom: 14px;
+    padding-bottom: 12px;
   }
 
   .score-verdict {
-    font-size: 10pt;
-    color: rgba(255,255,255,0.55);
-    margin-bottom: 16px;
-    font-weight: 400;
-    line-height: 1.3;
+    font-size: 9pt;
+    color: #7a6a5a;
+    margin-bottom: 14px;
+    line-height: 1.35;
   }
 
-  /* Pills catégories */
+  /* Pills */
   .score-pills {
     display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
+    gap: 6px;
+    margin-bottom: 16px;
     flex-wrap: wrap;
   }
 
   .score-pill {
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.10);
+    background: #ece6d8;
+    border: 1px solid rgba(44,24,16,0.12);
     border-radius: 20px;
-    padding: 5px 12px;
+    padding: 4px 11px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
   }
 
   .pill-val {
-    font-size: 10pt;
+    font-size: 9.5pt;
     font-weight: 700;
   }
 
-  .pill-val.green { color: #34d399; }
-  .pill-val.yellow { color: #fbbf24; }
-  .pill-val.red { color: #f87171; }
+  .pill-val.green  { color: #4a7c59; }
+  .pill-val.yellow { color: #a0692a; }
+  .pill-val.red    { color: #b84040; }
 
   .pill-label {
-    font-size: 7.5pt;
-    color: rgba(255,255,255,0.5);
+    font-size: 7pt;
+    color: #a8968a;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.3px;
   }
 
-  /* Cards top 3 */
-  .issues-section-title {
-    font-size: 7.5pt;
-    font-weight: 600;
+  /* Cards top 3 problèmes */
+  .issues-label {
+    font-size: 7pt;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1px;
-    color: rgba(255,255,255,0.30);
-    margin-bottom: 10px;
+    color: #a8968a;
+    margin-bottom: 8px;
   }
 
   .issue-card-new {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    padding: 10px 14px;
-    margin-bottom: 8px;
+    gap: 10px;
+    background: #ffffff;
+    border-radius: 7px;
+    padding: 9px 12px;
+    margin-bottom: 7px;
     border-left: 3px solid transparent;
+    border: 1px solid rgba(44,24,16,0.10);
+    border-left-width: 3px;
   }
 
-  .issue-card-new.critical { border-left-color: #f87171; background: rgba(248,113,113,0.08); }
-  .issue-card-new.warning  { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); }
-  .issue-card-new.info     { border-left-color: #60a5fa; background: rgba(96,165,250,0.08); }
+  .issue-card-new.critical { border-left-color: #b84040; background: #fdeaea; }
+  .issue-card-new.warning  { border-left-color: #d97706; background: #fdf3e3; }
+  .issue-card-new.info     { border-left-color: #4a7c59; background: #edf5f0; }
 
-  /* Cards pages internes */
-  .issue-card {
-    border-left: 4px solid;
-    padding: 10px 14px;
-    margin-bottom: 8px;
-    border-radius: 0 6px 6px 0;
-  }
-  .issue-card.critical { border-color: #dc2626; background: #fef2f2; }
-  .issue-card.warning  { border-color: #d97706; background: #fffbeb; }
-  .issue-card.info     { border-color: #3b82f6; background: #eff6ff; }
-  .issue-card .issue-title   { font-weight: 700; font-size: 10pt; margin-bottom: 3px; }
-  .issue-card .issue-message { font-size: 9pt; color: #475569; }
-  .issue-card .issue-impact  { font-size: 8pt; color: #64748b; margin-top: 4px; font-style: italic; }
-
-  .issue-icon {
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    margin-top: 1px;
-  }
-
+  .issue-icon { flex-shrink: 0; width: 18px; height: 18px; margin-top: 1px; }
   .issue-icon svg { display: block; }
 
-  .issue-body {}
-
   .issue-title-new {
-    font-size: 9pt;
+    font-size: 8.5pt;
     font-weight: 700;
-    color: #f1f5f9;
+    color: #2c1810;
     margin-bottom: 2px;
     line-height: 1.2;
   }
 
   .issue-msg {
-    font-size: 7.5pt;
-    color: rgba(255,255,255,0.45);
+    font-size: 7pt;
+    color: #7a6a5a;
     line-height: 1.3;
   }
 
-  /* ═══ PAGES DÉTAILS ═══ */
-  .detail-section {
-    margin-bottom: 25px;
-  }
+  /* ══════════════════════════════════════════════
+     PAGES INTERNES — base
+  ══════════════════════════════════════════════ */
+  .page-break { page-break-before: always; }
+
+  .detail-section { margin-bottom: 22px; }
 
   .detail-section h2 {
-    font-size: 14pt;
-    color: #0f172a;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 6px;
-    margin-bottom: 15px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13pt;
+    font-weight: bold;
+    color: #2c1810;
+    border-bottom: 2px solid #d4715f;
+    padding-bottom: 5px;
+    margin-bottom: 14px;
   }
 
   .detail-section h3 {
-    font-size: 11pt;
-    color: #334155;
-    margin-bottom: 8px;
-    margin-top: 15px;
+    font-size: 10pt;
+    font-weight: 700;
+    color: #7a6a5a;
+    margin-bottom: 7px;
+    margin-top: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-size: 8pt;
   }
 
-  /* Tables */
+  /* ── Tables ── */
   table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 15px;
+    margin-bottom: 14px;
     font-size: 9pt;
   }
 
   th {
-    background: #f1f5f9;
-    padding: 8px 10px;
+    background: #ece6d8;
+    padding: 7px 10px;
     text-align: left;
-    font-weight: 600;
-    font-size: 8pt;
+    font-weight: 700;
+    font-size: 7.5pt;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    color: #475569;
-    border-bottom: 2px solid #e2e8f0;
+    letter-spacing: 0.4px;
+    color: #7a6a5a;
+    border-bottom: 2px solid #d4715f;
   }
 
   td {
     padding: 8px 10px;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid #ece6d8;
+    color: #2c1810;
+    background: #ffffff;
   }
 
-  tr:nth-child(even) td { background: #fafafa; }
+  tr:nth-child(even) td { background: #faf8f4; }
 
+  /* ── Badges ── */
   .badge {
     display: inline-block;
     padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 8pt;
-    font-weight: 600;
+    border-radius: 20px;
+    font-size: 7.5pt;
+    font-weight: 700;
   }
 
-  .badge.good { background: #d1fae5; color: #065f46; }
-  .badge.warning { background: #fef3c7; color: #92400e; }
-  .badge.critical { background: #fee2e2; color: #991b1b; }
+  .badge.good     { background: #edf5f0; color: #4a7c59; }
+  .badge.warning  { background: #fdf3e3; color: #a0692a; }
+  .badge.critical { background: #fdeaea; color: #b84040; }
 
-  /* Checklist technique */
-  .checklist {
-    list-style: none;
-    padding: 0;
-  }
+  /* ── Checklist technique ── */
+  .checklist { list-style: none; padding: 0; }
 
   .checklist li {
-    padding: 6px 0;
-    border-bottom: 1px solid #f1f5f9;
+    padding: 7px 10px;
+    border-bottom: 1px solid #ece6d8;
     font-size: 9.5pt;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
 
-  .check-pass::before { content: "✅ "; }
-  .check-fail::before { content: "❌ "; }
+  .checklist li:last-child { border-bottom: none; }
+  .check-pass { color: #2c1810; }
+  .check-fail { color: #b84040; }
+  .check-pass::before { content: "✓"; color: #4a7c59; font-weight: bold; font-size: 10pt; }
+  .check-fail::before { content: "✗"; color: #b84040; font-weight: bold; font-size: 10pt; }
 
-  /* Recommandations */
+  /* ── Recommandations ── */
   .rec-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 14px;
-    margin-bottom: 10px;
+    border: 1px solid rgba(44,24,16,0.12);
+    border-left: 4px solid #d4715f;
+    border-radius: 0 8px 8px 0;
+    padding: 12px 14px;
+    margin-bottom: 9px;
+    background: #ffffff;
   }
 
-  .rec-card .rec-header {
+  .rec-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
   }
 
-  .rec-card .rec-title {
+  .rec-title {
     font-weight: 700;
-    font-size: 10pt;
-    color: #0f172a;
+    font-size: 9.5pt;
+    color: #2c1810;
   }
 
-  .rec-card .rec-priority {
-    font-size: 8pt;
-    font-weight: 600;
-    padding: 2px 8px;
-    border-radius: 10px;
+  .rec-priority {
+    font-size: 7pt;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  .rec-priority.critique { background: #fee2e2; color: #991b1b; }
-  .rec-priority.haute { background: #fed7aa; color: #9a3412; }
-  .rec-priority.moyenne { background: #fef3c7; color: #92400e; }
+  .rec-priority.high    { background: #fdeaea; color: #b84040; }
+  .rec-priority.medium  { background: #fdf3e3; color: #a0692a; }
+  .rec-priority.low     { background: #edf5f0; color: #4a7c59; }
+  .rec-priority.critique { background: #fdeaea; color: #b84040; }
+  .rec-priority.haute    { background: #fdf3e3; color: #a0692a; }
+  .rec-priority.moyenne  { background: #edf5f0; color: #4a7c59; }
 
-  .rec-card .rec-desc {
-    font-size: 9pt;
-    color: #475569;
+  .rec-desc {
+    font-size: 8.5pt;
+    color: #7a6a5a;
     line-height: 1.5;
   }
 
-  .rec-card .rec-meta {
-    font-size: 8pt;
-    color: #94a3b8;
+  .rec-meta {
+    font-size: 7.5pt;
+    color: #a8968a;
     margin-top: 5px;
   }
 
-  /* CTA final */
+  /* ── Section cards internes (social issues) ── */
+  .issue-card {
+    border-left: 3px solid;
+    padding: 9px 12px;
+    margin-bottom: 7px;
+    border-radius: 0 6px 6px 0;
+    background: #ffffff;
+    border-top: 1px solid rgba(44,24,16,0.08);
+    border-right: 1px solid rgba(44,24,16,0.08);
+    border-bottom: 1px solid rgba(44,24,16,0.08);
+  }
+  .issue-card.critical { border-left-color: #b84040; }
+  .issue-card.warning  { border-left-color: #d97706; }
+  .issue-card.info     { border-left-color: #4a7c59; }
+  .issue-card .issue-title   { font-weight: 700; font-size: 9.5pt; color: #2c1810; margin-bottom: 3px; }
+  .issue-card .issue-message { font-size: 8.5pt; color: #7a6a5a; }
+  .issue-card .issue-impact  { font-size: 8pt; color: #a8968a; margin-top: 4px; font-style: italic; }
+
+  /* ── CTA ── */
   .cta-section {
-    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+    background: #2c1810;
     color: white;
-    padding: 30px;
-    border-radius: 12px;
+    padding: 24px 28px;
+    border-radius: 10px;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 24px;
   }
 
   .cta-section h2 {
-    font-size: 16pt;
-    margin-bottom: 8px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 14pt;
+    margin-bottom: 7px;
     border: none;
     color: white;
+    padding-bottom: 0;
   }
 
   .cta-section p {
-    color: #93c5fd;
-    font-size: 10pt;
-    margin-bottom: 15px;
-  }
-
-  .cta-button {
-    display: inline-block;
-    background: #3b82f6;
-    color: white;
-    padding: 12px 30px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 11pt;
+    color: #e8937f;
+    font-size: 9.5pt;
+    margin-bottom: 14px;
   }
 
   .cta-contact {
-    margin-top: 15px;
-    font-size: 9pt;
-    color: #94a3b8;
+    margin-top: 12px;
+    font-size: 8pt;
+    color: rgba(255,255,255,0.45);
   }
-
-  .page-break { page-break-before: always; }
 
   /* ── Section Instagram ── */
   .social-header {
     display: flex;
     align-items: center;
-    gap: 20px;
-    background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
+    gap: 18px;
+    border-radius: 10px;
+    padding: 18px 22px;
+    margin-bottom: 18px;
     color: white;
   }
 
+  .ig-header { background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 52%, #fcb045 100%); }
+  .fb-header { background: linear-gradient(135deg, #1877f2 0%, #0d5bb5 100%); }
+
   .ig-avatar {
-    width: 64px; height: 64px;
+    width: 58px; height: 58px;
     border-radius: 50%;
-    border: 3px solid rgba(255,255,255,.6);
+    border: 2px solid rgba(255,255,255,.55);
     object-fit: cover;
     flex-shrink: 0;
   }
 
   .ig-avatar-placeholder {
-    width: 64px; height: 64px;
+    width: 58px; height: 58px;
     border-radius: 50%;
-    border: 3px solid rgba(255,255,255,.4);
+    border: 2px solid rgba(255,255,255,.35);
     background: rgba(255,255,255,.15);
     display: flex; align-items: center; justify-content: center;
-    font-size: 26pt;
+    font-size: 22pt;
     flex-shrink: 0;
   }
 
-  .ig-handle {
-    font-size: 16pt;
-    font-weight: 700;
-  }
-
-  .ig-bio {
-    font-size: 9pt;
-    opacity: .85;
-    margin-top: 4px;
-  }
+  .ig-handle { font-size: 14pt; font-weight: 700; }
+  .ig-bio    { font-size: 8.5pt; opacity: .80; margin-top: 3px; }
 
   .ig-stats {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     margin-left: auto;
     flex-shrink: 0;
   }
@@ -471,98 +478,67 @@
   .ig-stat {
     text-align: center;
     background: rgba(255,255,255,.15);
-    border-radius: 8px;
-    padding: 10px 16px;
-    min-width: 80px;
+    border-radius: 7px;
+    padding: 8px 14px;
+    min-width: 72px;
   }
 
-  .ig-stat-value {
-    font-size: 16pt;
-    font-weight: 800;
-    display: block;
-  }
-
-  .ig-stat-label {
-    font-size: 7pt;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    opacity: .8;
-    display: block;
-    margin-top: 2px;
-  }
+  .ig-stat-value { font-size: 14pt; font-weight: 800; display: block; }
+  .ig-stat-label { font-size: 6.5pt; text-transform: uppercase; letter-spacing: .5px; opacity: .75; display: block; margin-top: 2px; }
 
   .social-missing {
-    border: 2px dashed #e2e8f0;
-    border-radius: 12px;
-    padding: 30px;
+    border: 2px dashed #ece6d8;
+    border-radius: 10px;
+    padding: 24px;
     text-align: center;
-    color: #94a3b8;
-    margin-bottom: 20px;
+    color: #a8968a;
+    margin-bottom: 18px;
+    background: #ffffff;
   }
 
-  .social-missing .icon { font-size: 28pt; margin-bottom: 10px; }
-  .social-missing p { font-size: 10pt; }
+  .social-missing .icon { font-size: 24pt; margin-bottom: 8px; }
+  .social-missing p { font-size: 9.5pt; }
 
   .ig-score-row {
     display: flex;
     align-items: center;
     gap: 12px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
+    background: #f5f1e8;
+    border: 1px solid #ece6d8;
     border-radius: 8px;
-    padding: 14px 18px;
-    margin-bottom: 15px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
   }
 
   .ig-score-circle {
-    width: 52px; height: 52px;
+    width: 48px; height: 48px;
     border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 14pt;
+    font-size: 13pt;
     font-weight: 800;
     color: white;
     flex-shrink: 0;
   }
-  .ig-score-circle.green  { background: linear-gradient(135deg, #059669, #10b981); }
-  .ig-score-circle.yellow { background: linear-gradient(135deg, #d97706, #f59e0b); }
-  .ig-score-circle.red    { background: linear-gradient(135deg, #dc2626, #ef4444); }
+  .ig-score-circle.green  { background: #4a7c59; }
+  .ig-score-circle.yellow { background: #a0692a; }
+  .ig-score-circle.red    { background: #b84040; }
 
-  /* ── Section Facebook ── */
-  .fb-header {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background: linear-gradient(135deg, #1877f2 0%, #0d5bb5 100%);
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
-    color: white;
-  }
-
+  /* Facebook */
   .fb-icon {
-    width: 56px; height: 56px;
-    border-radius: 12px;
+    width: 52px; height: 52px;
+    border-radius: 10px;
     background: rgba(255,255,255,.2);
     display: flex; align-items: center; justify-content: center;
-    font-size: 28pt;
+    font-size: 22pt; font-weight: 700;
     flex-shrink: 0;
   }
 
-  .fb-page-name {
-    font-size: 15pt;
-    font-weight: 700;
-  }
-
-  .fb-page-url {
-    font-size: 9pt;
-    opacity: .8;
-    margin-top: 3px;
-    word-break: break-all;
-  }
+  .fb-page-name { font-size: 14pt; font-weight: 700; }
+  .fb-page-url  { font-size: 8pt; opacity: .75; margin-top: 2px; word-break: break-all; }
 
   .fb-signals {
     display: flex;
-    gap: 10px;
+    gap: 9px;
     margin-left: auto;
     flex-shrink: 0;
     flex-wrap: wrap;
@@ -571,29 +547,29 @@
 
   .fb-signal {
     background: rgba(255,255,255,.15);
-    border-radius: 8px;
-    padding: 8px 14px;
+    border-radius: 7px;
+    padding: 7px 12px;
     text-align: center;
-    min-width: 90px;
+    min-width: 82px;
   }
 
-  .fb-signal-icon  { font-size: 16pt; display: block; }
-  .fb-signal-label { font-size: 7pt; text-transform: uppercase; letter-spacing: .4px; opacity: .8; display: block; margin-top: 3px; }
-  .fb-signal-val   { font-size: 9pt; font-weight: 700; display: block; margin-top: 1px; }
+  .fb-signal-icon  { font-size: 14pt; display: block; }
+  .fb-signal-label { font-size: 6.5pt; text-transform: uppercase; letter-spacing: .4px; opacity: .75; display: block; margin-top: 2px; }
+  .fb-signal-val   { font-size: 8.5pt; font-weight: 700; display: block; margin-top: 1px; }
 
   .signal-yes { color: #bbf7d0; }
   .signal-no  { color: #fca5a5; }
-  .signal-na  { color: rgba(255,255,255,.5); }
+  .signal-na  { color: rgba(255,255,255,.45); }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- PAGE 1 : COUVERTURE                       -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════
+     PAGE 1 : COUVERTURE
+════════════════════════════════════════════ -->
 <div class="cover">
 
-  <!-- Colonne gauche : hero screenshot -->
+  <!-- Gauche : hero screenshot -->
   <div class="cover-hero">
     {% if analysis.screenshot %}
       <img class="hero-screenshot" src="{{ analysis.screenshot }}" alt="Screenshot {{ analysis.domain }}">
@@ -601,10 +577,10 @@
       <div class="hero-placeholder"></div>
     {% endif %}
     <div class="hero-overlay">
-      <div class="hero-top">
+      <div>
         <img src="logo.svg" alt="Marin Digital" class="hero-logo">
       </div>
-      <div class="hero-bottom">
+      <div>
         {% if analysis.prospect and analysis.prospect.name and analysis.prospect.name != analysis.domain %}
         <div class="hero-company">{{ analysis.prospect.name }}</div>
         {% endif %}
@@ -614,11 +590,10 @@
     </div>
   </div>
 
-  <!-- Colonne droite : score + problèmes -->
+  <!-- Droite : score + problèmes -->
   <div class="cover-panel">
-    <div class="panel-title">Audit SEO &amp; Performance</div>
+    <div class="panel-tag">Audit SEO &amp; Performance</div>
 
-    <!-- Score géant -->
     {% set sc = analysis.global_score %}
     {% set sc_cls = 'score-green' if sc >= 80 else ('score-yellow' if sc >= 50 else 'score-red') %}
     <div class="score-display">
@@ -631,38 +606,31 @@
       {% else %}Problèmes critiques — visibilité fortement freinée{% endif %}
     </div>
 
-    <!-- Pills catégories -->
     <div class="score-pills">
       {% for key in ['performance', 'seo', 'accessibility', 'best_practices'] %}
       {% set v = analysis.verdicts[key] %}
+      {% set vc = 'green' if v.score >= 80 else ('yellow' if v.score >= 50 else 'red') %}
       <div class="score-pill">
-        <span class="pill-val {{ 'green' if v.score >= 80 else ('yellow' if v.score >= 50 else 'red') }}">{{ v.score }}</span>
+        <span class="pill-val {{ vc }}">{{ v.score }}</span>
         <span class="pill-label">{{ v.label }}</span>
       </div>
       {% endfor %}
     </div>
 
-    <!-- Top 3 problèmes -->
-    <div class="issues-section-title">Problèmes prioritaires</div>
+    <div class="issues-label">Problèmes prioritaires</div>
     {% for issue in analysis.top_3_issues %}
     {% set sev = issue.severity %}
     <div class="issue-card-new {{ sev }}">
       <div class="issue-icon">
         {% if sev == 'critical' %}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b84040" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         {% elif sev == 'warning' %}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
         {% else %}
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
-        </svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a7c59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
         {% endif %}
       </div>
-      <div class="issue-body">
+      <div>
         <div class="issue-title-new">{{ issue.title }}</div>
         <div class="issue-msg">{{ issue.message }}</div>
       </div>
@@ -672,39 +640,58 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- PAGE 2 : CORE WEB VITALS                  -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════
+     PAGE 2 : CORE WEB VITALS
+════════════════════════════════════════════ -->
 <div class="page-break"></div>
 
 <div class="detail-section">
-  <h2>⚡ Core Web Vitals & Performance</h2>
-  <p style="font-size: 9pt; color: #64748b; margin-bottom: 15px;">
+  <h2>⚡ Core Web Vitals &amp; Performance</h2>
+  <p style="font-size:8.5pt;color:#7a6a5a;margin-bottom:14px;">
     Les Core Web Vitals sont les indicateurs de Google pour mesurer l'expérience utilisateur.
-    Ils influencent directement votre positionnement.
+    Ils influencent directement votre positionnement dans les résultats de recherche.
   </p>
 
   <table>
     <thead>
       <tr>
         <th>Métrique</th>
-        <th>Valeur</th>
+        <th>Valeur mesurée</th>
         <th>Seuil recommandé</th>
         <th>Verdict</th>
       </tr>
     </thead>
     <tbody>
       {% set cwv_rows = [
-        ('LCP (Largest Contentful Paint)', analysis.verdicts.lcp.value, 's', '≤ 2.5s', analysis.verdicts.lcp.rating),
-        ('CLS (Cumulative Layout Shift)', analysis.verdicts.cls.value, '', '≤ 0.1', analysis.verdicts.cls.rating),
-        ('TBT (Total Blocking Time)', analysis.verdicts.tbt.value, 'ms', '≤ 200ms', analysis.verdicts.tbt.rating),
+        ('LCP — Largest Contentful Paint', analysis.verdicts.lcp.value, 's', '≤ 2.5s', analysis.verdicts.lcp.rating),
+        ('CLS — Cumulative Layout Shift',  analysis.verdicts.cls.value, '', '≤ 0.1',  analysis.verdicts.cls.rating),
+        ('TBT — Total Blocking Time',      analysis.verdicts.tbt.value, 'ms', '≤ 200ms', analysis.verdicts.tbt.rating),
       ] %}
       {% for label, value, unit, threshold, rating in cwv_rows %}
       <tr>
         <td><strong>{{ label }}</strong></td>
         <td>{{ value if value is not none else 'N/A' }}{{ unit if value is not none }}</td>
-        <td>{{ threshold }}</td>
-        <td>{{ rating }}</td>
+        <td style="color:#7a6a5a;">{{ threshold }}</td>
+        <td>
+          {% if rating == 'good' %}<span class="badge good">Bon</span>
+          {% elif rating == 'needs-improvement' %}<span class="badge warning">À améliorer</span>
+          {% else %}<span class="badge critical">Critique</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+
+      <!-- Scores Lighthouse -->
+      {% for key, label in [('performance','Performance'),('seo','SEO'),('accessibility','Accessibilité'),('best_practices','Bonnes pratiques')] %}
+      {% set v = analysis.verdicts[key] %}
+      <tr>
+        <td><strong>{{ label }}</strong></td>
+        <td>{{ v.score }}/100</td>
+        <td style="color:#7a6a5a;">≥ 80</td>
+        <td>
+          {% if v.score >= 80 %}<span class="badge good">Bon</span>
+          {% elif v.score >= 50 %}<span class="badge warning">À améliorer</span>
+          {% else %}<span class="badge critical">Critique</span>{% endif %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>
@@ -715,15 +702,15 @@
   <table>
     <thead>
       <tr>
-        <th>Problème</th>
-        <th>Détail</th>
+        <th style="width:55%">Problème identifié</th>
+        <th>Valeur / Impact</th>
       </tr>
     </thead>
     <tbody>
       {% for diag in analysis.raw.pagespeed.diagnostics[:8] %}
       <tr>
         <td>{{ diag.title }}</td>
-        <td>{{ diag.display_value or '—' }}</td>
+        <td style="color:#7a6a5a;">{{ diag.display_value or '—' }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -731,9 +718,9 @@
   {% endif %}
 </div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- PAGE 3 : SEO ON-PAGE                      -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════
+     PAGE 3 : SEO ON-PAGE
+════════════════════════════════════════════ -->
 <div class="page-break"></div>
 
 <div class="detail-section">
@@ -742,112 +729,87 @@
   <table>
     <thead>
       <tr>
-        <th>Élément</th>
-        <th>Contenu / Valeur</th>
+        <th style="width:20%">Élément</th>
+        <th style="width:55%">Contenu / Valeur</th>
         <th>Verdict</th>
       </tr>
     </thead>
     <tbody>
       <tr>
         <td><strong>Title</strong></td>
-        <td>{{ analysis.raw.onpage.title[:70] or '(absent)' }}
-            <br><span style="font-size:8pt;color:#94a3b8;">{{ analysis.raw.onpage.title_length }} caractères</span></td>
+        <td>{{ analysis.raw.onpage.title[:75] or '(absent)' }}
+          <br><span style="font-size:7.5pt;color:#a8968a;">{{ analysis.raw.onpage.title_length }} caractères</span></td>
         <td>
-          {% if not analysis.raw.onpage.title %}
-            <span class="badge critical">Absent</span>
-          {% elif analysis.raw.onpage.title_length > 60 %}
-            <span class="badge warning">Trop long</span>
-          {% else %}
-            <span class="badge good">OK</span>
-          {% endif %}
+          {% if not analysis.raw.onpage.title %}<span class="badge critical">Absent</span>
+          {% elif analysis.raw.onpage.title_length > 60 %}<span class="badge warning">Trop long</span>
+          {% else %}<span class="badge good">✓ OK</span>{% endif %}
         </td>
       </tr>
       <tr>
         <td><strong>Meta Description</strong></td>
         <td>{{ analysis.raw.onpage.meta_description[:120] or '(absente)' }}
-            <br><span style="font-size:8pt;color:#94a3b8;">{{ analysis.raw.onpage.meta_description_length }} caractères</span></td>
+          <br><span style="font-size:7.5pt;color:#a8968a;">{{ analysis.raw.onpage.meta_description_length }} caractères</span></td>
         <td>
-          {% if not analysis.raw.onpage.meta_description %}
-            <span class="badge critical">Absente</span>
-          {% elif analysis.raw.onpage.meta_description_length < 120 %}
-            <span class="badge warning">Trop courte</span>
-          {% elif analysis.raw.onpage.meta_description_length > 160 %}
-            <span class="badge warning">Trop longue</span>
-          {% else %}
-            <span class="badge good">OK</span>
-          {% endif %}
+          {% if not analysis.raw.onpage.meta_description %}<span class="badge critical">Absente</span>
+          {% elif analysis.raw.onpage.meta_description_length < 120 %}<span class="badge warning">Trop courte</span>
+          {% elif analysis.raw.onpage.meta_description_length > 160 %}<span class="badge warning">Trop longue</span>
+          {% else %}<span class="badge good">✓ OK</span>{% endif %}
         </td>
       </tr>
       <tr>
         <td><strong>H1</strong></td>
         <td>{{ analysis.raw.onpage.h1|join(', ') if analysis.raw.onpage.h1 else '(absent)' }}</td>
         <td>
-          {% if analysis.raw.onpage.h1_count == 0 %}
-            <span class="badge critical">Absent</span>
-          {% elif analysis.raw.onpage.h1_count > 1 %}
-            <span class="badge warning">{{ analysis.raw.onpage.h1_count }} H1</span>
-          {% else %}
-            <span class="badge good">OK</span>
-          {% endif %}
+          {% if analysis.raw.onpage.h1_count == 0 %}<span class="badge critical">Absent</span>
+          {% elif analysis.raw.onpage.h1_count > 1 %}<span class="badge warning">{{ analysis.raw.onpage.h1_count }} H1</span>
+          {% else %}<span class="badge good">✓ OK</span>{% endif %}
         </td>
       </tr>
       <tr>
         <td><strong>Images</strong></td>
-        <td>{{ analysis.raw.onpage.images_total }} images, {{ analysis.raw.onpage.images_missing_alt }} sans alt</td>
+        <td>{{ analysis.raw.onpage.images_total }} images · {{ analysis.raw.onpage.images_missing_alt }} sans alt</td>
         <td>
-          {% if analysis.raw.onpage.images_missing_alt > 0 %}
-            <span class="badge warning">Alt manquants</span>
-          {% else %}
-            <span class="badge good">OK</span>
-          {% endif %}
+          {% if analysis.raw.onpage.images_missing_alt > 0 %}<span class="badge warning">Alt manquants</span>
+          {% else %}<span class="badge good">✓ OK</span>{% endif %}
         </td>
       </tr>
       <tr>
-        <td><strong>Viewport (mobile)</strong></td>
-        <td>{{ 'Présent' if analysis.raw.onpage.has_viewport else 'Absent' }}</td>
+        <td><strong>Viewport</strong></td>
+        <td>{{ 'Balise présente' if analysis.raw.onpage.has_viewport else 'Balise absente' }}</td>
         <td>
-          {% if analysis.raw.onpage.has_viewport %}
-            <span class="badge good">OK</span>
-          {% else %}
-            <span class="badge critical">Non responsive</span>
-          {% endif %}
+          {% if analysis.raw.onpage.has_viewport %}<span class="badge good">✓ Responsive</span>
+          {% else %}<span class="badge critical">Non responsive</span>{% endif %}
         </td>
       </tr>
       <tr>
         <td><strong>Canonical</strong></td>
-        <td>{{ analysis.raw.onpage.canonical_url[:60] or '(absente)' }}</td>
+        <td>{{ analysis.raw.onpage.canonical_url[:65] or '(absente)' }}</td>
         <td>
-          {% if analysis.raw.onpage.canonical_url %}
-            <span class="badge good">OK</span>
-          {% else %}
-            <span class="badge warning">Absente</span>
-          {% endif %}
+          {% if analysis.raw.onpage.canonical_url %}<span class="badge good">✓ OK</span>
+          {% else %}<span class="badge warning">Absente</span>{% endif %}
         </td>
       </tr>
       <tr>
         <td><strong>Open Graph</strong></td>
-        <td>{{ 'Complet' if analysis.raw.onpage.og_complete else 'Incomplet' }}</td>
+        <td>{{ 'Balises complètes' if analysis.raw.onpage.og_complete else 'Balises incomplètes' }}</td>
         <td>
-          {% if analysis.raw.onpage.og_complete %}
-            <span class="badge good">OK</span>
-          {% else %}
-            <span class="badge warning">Incomplet</span>
-          {% endif %}
+          {% if analysis.raw.onpage.og_complete %}<span class="badge good">✓ Complet</span>
+          {% else %}<span class="badge warning">Incomplet</span>{% endif %}
         </td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<!-- Checklist technique -->
+<!-- Checklist technique (même page) -->
 <div class="detail-section">
   <h2>🔧 Checklist Technique</h2>
   <ul class="checklist">
     <li class="{{ 'check-pass' if analysis.raw.technical.is_https else 'check-fail' }}">
-      HTTPS {{ '— Activé' if analysis.raw.technical.is_https else '— Non activé ⚠️' }}
+      HTTPS {{ '— Certificat SSL actif' if analysis.raw.technical.is_https else '— Non activé (critique)' }}
     </li>
     <li class="{{ 'check-pass' if analysis.raw.technical.has_robots else 'check-fail' }}">
-      robots.txt {{ '— Présent' if analysis.raw.technical.has_robots else '— Absent' }}
+      robots.txt {{ '— Fichier présent' if analysis.raw.technical.has_robots else '— Fichier absent' }}
     </li>
     <li class="{{ 'check-pass' if analysis.raw.technical.has_sitemap else 'check-fail' }}">
       sitemap.xml {{ '— Présent (' ~ analysis.raw.technical.sitemap_urls_count ~ ' URLs)' if analysis.raw.technical.has_sitemap else '— Absent' }}
@@ -861,19 +823,20 @@
   </ul>
 </div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- PAGE 4 : RECOMMANDATIONS + CTA            -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════
+     PAGE 4 : RECOMMANDATIONS + CTA
+════════════════════════════════════════════ -->
 <div class="page-break"></div>
 
 <div class="detail-section">
   <h2>📋 Recommandations priorisées</h2>
 
   {% for rec in analysis.recommendations %}
+  {% set pc = 'high' if rec.priority == 'high' else ('medium' if rec.priority == 'medium' else 'low') %}
   <div class="rec-card">
     <div class="rec-header">
       <span class="rec-title">{{ rec.title }}</span>
-      <span class="rec-priority {{ rec.priority }}">{{ rec.priority|upper }}</span>
+      <span class="rec-priority {{ pc }}">{{ rec.priority|upper }}</span>
     </div>
     <div class="rec-desc">{{ rec.description }}</div>
     <div class="rec-meta">{{ rec.category }} · Effort : {{ rec.effort }}</div>
@@ -881,9 +844,18 @@
   {% endfor %}
 </div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- PAGE 5 : PRÉSENCE SOCIALE INSTAGRAM      -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Passez à l'action</h2>
+  <p>Votre site mérite d'être n°1 sur votre marché local.</p>
+  {% if cta and cta.email %}
+  <div class="cta-contact">Contact : {{ cta.email }}{% if cta.phone %} · {{ cta.phone }}{% endif %}</div>
+  {% endif %}
+</div>
+
+<!-- ════════════════════════════════════════════
+     PAGE 5 : INSTAGRAM
+════════════════════════════════════════════ -->
 <div class="page-break"></div>
 
 <div class="detail-section">
@@ -894,24 +866,17 @@
 
   {% if social.instagram_linked and social.instagram_handle %}
 
-    <!-- En-tête profil -->
-    <div class="social-header">
+    <div class="social-header ig-header">
       {% if metrics.profile_image %}
-        <img class="ig-avatar" src="{{ metrics.profile_image }}" alt="@{{ social.instagram_handle }}" />
+        <img class="ig-avatar" src="{{ metrics.profile_image }}" alt="@{{ social.instagram_handle }}">
       {% else %}
         <div class="ig-avatar-placeholder">📷</div>
       {% endif %}
-
       <div>
         <div class="ig-handle">@{{ social.instagram_handle }}</div>
-        {% if metrics.title %}
-          <div class="ig-bio">{{ metrics.title }}</div>
-        {% endif %}
-        {% if metrics.bio %}
-          <div class="ig-bio" style="margin-top:4px;font-style:italic;">"{{ metrics.bio[:120] }}"</div>
-        {% endif %}
+        {% if metrics.title %}<div class="ig-bio">{{ metrics.title }}</div>{% endif %}
+        {% if metrics.bio %}<div class="ig-bio" style="margin-top:3px;font-style:italic;">"{{ metrics.bio[:110] }}"</div>{% endif %}
       </div>
-
       {% if metrics.found %}
       <div class="ig-stats">
         <div class="ig-stat">
@@ -924,95 +889,82 @@
         </div>
         <div class="ig-stat">
           <span class="ig-stat-value">{{ "{:,}".format(metrics.following) if metrics.following is not none else "—" }}</span>
-          <span class="ig-stat-label">Abonnements</span>
+          <span class="ig-stat-label">Suivis</span>
         </div>
       </div>
       {% endif %}
     </div>
 
-    <!-- Score social -->
     <div class="ig-score-row">
       <div class="ig-score-circle {{ 'green' if analysis.social_score >= 80 else ('yellow' if analysis.social_score >= 50 else 'red') }}">
         {{ analysis.social_score }}
       </div>
       <div>
         <strong>Score présence sociale : {{ analysis.social_score }}/100</strong>
-        <div style="font-size:9pt;color:#64748b;margin-top:3px;">
-          {% if analysis.social_score >= 80 %}
-            Bonne présence sociale — compte actif et audience significative
-          {% elif analysis.social_score >= 50 %}
-            Présence sociale correcte, mais des axes d'amélioration existent
-          {% else %}
-            Présence sociale insuffisante — potentiel inexploité
-          {% endif %}
+        <div style="font-size:8.5pt;color:#7a6a5a;margin-top:3px;">
+          {% if analysis.social_score >= 80 %}Bonne présence sociale — compte actif et audience significative
+          {% elif analysis.social_score >= 50 %}Présence correcte, mais des axes d'amélioration existent
+          {% else %}Présence insuffisante — potentiel inexploité{% endif %}
         </div>
       </div>
     </div>
 
-    <!-- Tableau métriques -->
     {% if metrics.found %}
     <table>
       <thead>
-        <tr>
-          <th>Métrique</th>
-          <th>Valeur</th>
-          <th>Seuil recommandé</th>
-          <th>Verdict</th>
-        </tr>
+        <tr><th>Métrique</th><th>Valeur</th><th>Seuil recommandé</th><th>Verdict</th></tr>
       </thead>
       <tbody>
         <tr>
           <td><strong>Abonnés</strong></td>
           <td>{{ "{:,}".format(metrics.followers) if metrics.followers is not none else "N/A" }}</td>
-          <td>≥ 500</td>
+          <td style="color:#7a6a5a;">≥ 500</td>
           <td>
             {% if metrics.followers is not none %}
-              {% if metrics.followers >= 1000 %}<span class="badge good">🟢 Excellent</span>
-              {% elif metrics.followers >= 200 %}<span class="badge warning">🟡 Correct</span>
-              {% else %}<span class="badge critical">🔴 Faible</span>{% endif %}
+              {% if metrics.followers >= 1000 %}<span class="badge good">Excellent</span>
+              {% elif metrics.followers >= 200 %}<span class="badge warning">Correct</span>
+              {% else %}<span class="badge critical">Faible</span>{% endif %}
             {% else %}—{% endif %}
           </td>
         </tr>
         <tr>
           <td><strong>Publications</strong></td>
           <td>{{ metrics.posts if metrics.posts is not none else "N/A" }}</td>
-          <td>≥ 30</td>
+          <td style="color:#7a6a5a;">≥ 30</td>
           <td>
             {% if metrics.posts is not none %}
-              {% if metrics.posts >= 50 %}<span class="badge good">🟢 Actif</span>
-              {% elif metrics.posts >= 15 %}<span class="badge warning">🟡 Modéré</span>
-              {% else %}<span class="badge critical">🔴 Inactif</span>{% endif %}
+              {% if metrics.posts >= 50 %}<span class="badge good">Actif</span>
+              {% elif metrics.posts >= 15 %}<span class="badge warning">Modéré</span>
+              {% else %}<span class="badge critical">Inactif</span>{% endif %}
             {% else %}—{% endif %}
           </td>
         </tr>
         <tr>
           <td><strong>Ratio following/abonnés</strong></td>
           <td>
-            {% if metrics.followers and metrics.following %}
-              {{ "%.2f"|format(metrics.following / metrics.followers) }}
+            {% if metrics.followers and metrics.following %}{{ "%.2f"|format(metrics.following / metrics.followers) }}
             {% else %}N/A{% endif %}
           </td>
-          <td>< 3</td>
+          <td style="color:#7a6a5a;">< 3</td>
           <td>
             {% if metrics.followers and metrics.following %}
               {% set ratio = metrics.following / metrics.followers %}
-              {% if ratio < 1.5 %}<span class="badge good">🟢 Naturel</span>
-              {% elif ratio < 3 %}<span class="badge warning">🟡 Acceptable</span>
-              {% else %}<span class="badge critical">🔴 Déséquilibré</span>{% endif %}
+              {% if ratio < 1.5 %}<span class="badge good">Naturel</span>
+              {% elif ratio < 3 %}<span class="badge warning">Acceptable</span>
+              {% else %}<span class="badge critical">Déséquilibré</span>{% endif %}
             {% else %}—{% endif %}
           </td>
         </tr>
         <tr>
-          <td><strong>Lien affiché sur le site</strong></td>
-          <td>{{ social.instagram_url[:60] }}</td>
-          <td>Présent</td>
-          <td><span class="badge good">✅ OK</span></td>
+          <td><strong>Lien sur le site</strong></td>
+          <td>{{ social.instagram_url[:55] }}</td>
+          <td style="color:#7a6a5a;">Présent</td>
+          <td><span class="badge good">✓ OK</span></td>
         </tr>
       </tbody>
     </table>
     {% endif %}
 
-    <!-- Issues sociales -->
     {% set social_issues = social.issues %}
     {% if social_issues %}
     <h3>Points d'attention</h3>
@@ -1025,42 +977,30 @@
 
   {% else %}
 
-    <!-- Pas de lien Instagram trouvé -->
     <div class="social-missing">
       <div class="icon">📵</div>
       <p><strong>Aucun lien Instagram trouvé sur le site</strong></p>
-      <p style="margin-top:6px;font-size:9pt;">
+      <p style="margin-top:5px;font-size:8.5pt;">
         Instagram est le réseau social n°1 pour l'immobilier résidentiel.<br>
         L'absence de lien visible prive vos visiteurs d'un canal de confiance essentiel.
       </p>
     </div>
 
     <table>
-      <thead>
-        <tr><th>Opportunité</th><th>Impact estimé</th></tr>
-      </thead>
+      <thead><tr><th>Opportunité</th><th>Impact estimé</th></tr></thead>
       <tbody>
-        <tr>
-          <td>Lien Instagram dans le footer / header</td>
-          <td>Preuve sociale immédiate pour les visiteurs</td>
-        </tr>
-        <tr>
-          <td>Visuels de biens en Reels</td>
-          <td>+40% d'engagement vs photos statiques</td>
-        </tr>
-        <tr>
-          <td>Hashtags locaux (#immobilier[Ville])</td>
-          <td>Visibilité organique auprès de l'audience locale</td>
-        </tr>
+        <tr><td>Lien Instagram dans le footer / header</td><td>Preuve sociale immédiate pour les visiteurs</td></tr>
+        <tr><td>Visuels de biens en Reels</td><td>+40% d'engagement vs photos statiques</td></tr>
+        <tr><td>Hashtags locaux (#immobilier[Ville])</td><td>Visibilité organique auprès de l'audience locale</td></tr>
       </tbody>
     </table>
 
   {% endif %}
 </div>
 
-<!-- ═══════════════════════════════════════════ -->
-<!-- PAGE 6 : FACEBOOK                        -->
-<!-- ═══════════════════════════════════════════ -->
+<!-- ════════════════════════════════════════════
+     PAGE 6 : FACEBOOK
+════════════════════════════════════════════ -->
 <div class="page-break"></div>
 
 <div class="detail-section">
@@ -1070,153 +1010,110 @@
 
   {% if social.facebook_linked %}
 
-    <!-- En-tête page -->
-    <div class="fb-header">
+    <div class="social-header fb-header">
       <div class="fb-icon">f</div>
       <div>
-        <div class="fb-page-name">
-          {{ social.facebook_name if social.facebook_name else (social.facebook_slug or 'Page Facebook') }}
-        </div>
+        <div class="fb-page-name">{{ social.facebook_name if social.facebook_name else (social.facebook_slug or 'Page Facebook') }}</div>
         <div class="fb-page-url">{{ social.facebook_url }}</div>
       </div>
-
-      <!-- Signaux détectés depuis le site -->
       <div class="fb-signals">
         <div class="fb-signal">
-          <span class="fb-signal-icon {{ 'signal-yes' if social.messenger.found else 'signal-no' }}">
-            {{ '✅' if social.messenger.found else '❌' }}
-          </span>
+          <span class="fb-signal-icon {{ 'signal-yes' if social.messenger.found else 'signal-no' }}">{{ '✅' if social.messenger.found else '❌' }}</span>
           <span class="fb-signal-label">Messenger</span>
           <span class="fb-signal-val">{{ social.messenger.type if social.messenger.found else 'Absent' }}</span>
         </div>
         <div class="fb-signal">
-          <span class="fb-signal-icon {{ 'signal-yes' if social.pixel else 'signal-no' }}">
-            {{ '✅' if social.pixel else '❌' }}
-          </span>
+          <span class="fb-signal-icon {{ 'signal-yes' if social.pixel else 'signal-no' }}">{{ '✅' if social.pixel else '❌' }}</span>
           <span class="fb-signal-label">Pixel FB</span>
           <span class="fb-signal-val">{{ 'Actif' if social.pixel else 'Absent' }}</span>
         </div>
       </div>
     </div>
 
-    <!-- Score Facebook -->
     <div class="ig-score-row">
       <div class="ig-score-circle {{ 'green' if analysis.raw.social.facebook_score >= 70 else ('yellow' if analysis.raw.social.facebook_score >= 40 else 'red') }}">
         {{ analysis.raw.social.facebook_score }}
       </div>
       <div>
         <strong>Score présence Facebook : {{ analysis.raw.social.facebook_score }}/100</strong>
-        <div style="font-size:9pt;color:#64748b;margin-top:3px;">
-          {% if analysis.raw.social.facebook_score >= 70 %}
-            Page liée, Messenger actif — bonne accessibilité pour les prospects
-          {% elif analysis.raw.social.facebook_score >= 40 %}
-            Page présente mais des outils de conversion manquent
-          {% else %}
-            Présence Facebook minimale — potentiel de lead gen inexploité
-          {% endif %}
+        <div style="font-size:8.5pt;color:#7a6a5a;margin-top:3px;">
+          {% if analysis.raw.social.facebook_score >= 70 %}Page liée, Messenger actif — bonne accessibilité pour les prospects
+          {% elif analysis.raw.social.facebook_score >= 40 %}Page présente mais des outils de conversion manquent
+          {% else %}Présence Facebook minimale — potentiel de lead gen inexploité{% endif %}
         </div>
       </div>
     </div>
 
-    <!-- Tableau des signaux -->
     <table>
-      <thead>
-        <tr>
-          <th>Signal</th>
-          <th>Statut</th>
-          <th>Impact</th>
-        </tr>
-      </thead>
+      <thead><tr><th>Signal</th><th>Statut</th><th>Impact</th></tr></thead>
       <tbody>
         <tr>
           <td><strong>Lien Facebook sur le site</strong></td>
-          <td><span class="badge good">✅ Présent</span></td>
+          <td><span class="badge good">✓ Présent</span></td>
           <td>Visiteurs peuvent accéder à la page et aux avis</td>
         </tr>
         <tr>
           <td><strong>Bouton Messenger</strong></td>
           <td>
-            {% if social.messenger.found %}
-              <span class="badge good">✅ {{ social.messenger.type }}</span>
-            {% else %}
-              <span class="badge critical">❌ Absent</span>
-            {% endif %}
+            {% if social.messenger.found %}<span class="badge good">✓ {{ social.messenger.type }}</span>
+            {% else %}<span class="badge critical">✗ Absent</span>{% endif %}
           </td>
           <td>
-            {% if social.messenger.found %}
-              Contact direct depuis le site — réduction du délai de réponse
-            {% else %}
-              Opportunité manquée : les leads partent chez la concurrence
-            {% endif %}
+            {% if social.messenger.found %}Contact direct depuis le site — réduction du délai de réponse
+            {% else %}Opportunité manquée : les leads partent chez la concurrence{% endif %}
           </td>
         </tr>
         <tr>
           <td><strong>Facebook Pixel</strong></td>
           <td>
-            {% if social.pixel %}
-              <span class="badge good">✅ Actif</span>
-            {% else %}
-              <span class="badge warning">❌ Absent</span>
-            {% endif %}
+            {% if social.pixel %}<span class="badge good">✓ Actif</span>
+            {% else %}<span class="badge warning">✗ Absent</span>{% endif %}
           </td>
           <td>
-            {% if social.pixel %}
-              Retargeting possible — visiteurs reciblables sur FB/Instagram
-            {% else %}
-              Impossible de recibler les visiteurs du site en publicité
-            {% endif %}
+            {% if social.pixel %}Retargeting possible — visiteurs reciblables sur FB/Instagram
+            {% else %}Impossible de recibler les visiteurs du site en publicité{% endif %}
           </td>
         </tr>
       </tbody>
     </table>
 
-    <p style="font-size:8.5pt;color:#94a3b8;margin-top:8px;font-style:italic;">
-      ℹ️ Les métriques de la page (abonnés, dernier post) nécessitent un accès authentifié à Facebook.
+    <p style="font-size:8pt;color:#a8968a;margin-top:6px;font-style:italic;">
+      ℹ️ Les métriques de la page (abonnés, dernier post) nécessitent un accès authentifié.
       Consultez directement : <strong>{{ social.facebook_url }}</strong>
     </p>
 
   {% else %}
 
-    <!-- Pas de page Facebook détectée -->
     <div class="social-missing">
       <div class="icon">📵</div>
       <p><strong>Aucun lien Facebook trouvé sur le site</strong></p>
-      <p style="margin-top:6px;font-size:9pt;">
+      <p style="margin-top:5px;font-size:8.5pt;">
         Facebook est le canal n°1 de génération de leads pour l'immobilier local.<br>
         L'absence de lien visible supprime un levier de contact et de crédibilité essentiel.
       </p>
     </div>
 
-    <!-- Tableau des signaux quand même -->
     <table>
-      <thead>
-        <tr><th>Signal</th><th>Statut</th><th>Impact</th></tr>
-      </thead>
+      <thead><tr><th>Signal</th><th>Statut</th><th>Impact</th></tr></thead>
       <tbody>
         <tr>
           <td><strong>Lien Facebook</strong></td>
-          <td><span class="badge critical">❌ Absent</span></td>
+          <td><span class="badge critical">✗ Absent</span></td>
           <td>Aucune preuve sociale visible pour les visiteurs</td>
         </tr>
         <tr>
           <td><strong>Bouton Messenger</strong></td>
           <td>
-            {% if social.messenger.found %}
-              <span class="badge good">✅ {{ social.messenger.type }}</span>
-            {% else %}
-              <span class="badge critical">❌ Absent</span>
-            {% endif %}
+            {% if social.messenger.found %}<span class="badge good">✓ {{ social.messenger.type }}</span>
+            {% else %}<span class="badge critical">✗ Absent</span>{% endif %}
           </td>
           <td>Contact direct impossible depuis le site</td>
         </tr>
         <tr>
           <td><strong>Facebook Pixel</strong></td>
           <td>
-            {% if social.pixel %}
-              <span class="badge good">✅ Actif</span>
-            {% else %}
-              <span class="badge warning">❌ Absent</span>
-            {% endif %}
+            {% if social.pixel %}<span class="badge good">✓ Actif</span>
+            {% else %}<span class="badge warning">✗ Absent</span>{% endif %}
           </td>
           <td>Retargeting publicitaire non opérationnel</td>
         </tr>
@@ -1225,7 +1122,6 @@
 
   {% endif %}
 </div>
-
 
 </body>
 </html>
